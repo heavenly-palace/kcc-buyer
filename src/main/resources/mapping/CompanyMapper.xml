@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.buyer.mapper.CompanyMapper">
+  <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.Company">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="contacts" jdbcType="VARCHAR" property="contacts" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="fax" jdbcType="VARCHAR" property="fax" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, cellphone, type, contacts, email, fax, location, `name`, telephone, `comment`
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from company
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByCompanyType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from company
+    where type = #{type,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from company
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertOrUpdateCompany" parameterType="com.kcc.buyer.domain.Company" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into company
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="cellphone != null">
+        cellphone,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="contacts != null">
+        contacts,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="fax != null">
+        fax,
+      </if>
+      <if test="location != null">
+        location,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="comment != null">
+        `comment`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="cellphone != null">
+        #{cellphone,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="contacts != null">
+        #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null">
+        #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        #{comment,jdbcType=VARCHAR},
+      </if>
+    </trim>
+    ON DUPLICATE KEY UPDATE
+    <trim suffixOverrides=",">
+      <if test="cellphone != null">cellphone = values(cellphone),</if>
+      <if test="contacts != null">contacts = values(contacts),</if>
+      <if test="email != null">email = values(email),</if>
+      <if test="fax != null">fax = values(fax),</if>
+      <if test="location != null">location = values(location),</if>
+      <if test="name != null">`name` = values(name),</if>
+      <if test="telephone != null">telephone = values(telephone),</if>
+      <if test="comment != null">comment = values(`comment`),</if>
+    </trim>
+  </insert>
+</mapper>

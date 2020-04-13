@@ -1,0 +1,43 @@
+server:
+  port: 8080
+  tomcat:
+    max-threads: 50
+    uri-encoding: utf-8
+
+spring:
+  datasource:
+    sql-script-encoding: UTF-8
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 15
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: KccHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+      registerMbeans: true
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/kcc?serverTimezone=Hongkong&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
+      username: root
+      password: LiXiao@549426
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+mybatis:
+  mapper-locations: classpath:mapping/*Mapper.xml
+  type-aliases-package: com.kcc.buyer.domain
+
+logging:
+  level:
+    com:
+      kcc:
+        buyer:
+          mapper: debug

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.buyer.mapper.AccountMapper">
+  <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.Account">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="bank_account" jdbcType="VARCHAR" property="bankAccount" />
+    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
+    <result column="company_id" jdbcType="INTEGER" property="companyId" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="tfn" jdbcType="VARCHAR" property="tfn" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, bank_account, bank_name, company_id, location, telephone, tfn
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from account
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insertOrUpdateAccount" parameterType="com.kcc.buyer.domain.Account">
+    insert into account
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="account.id != null">
+        id,
+      </if>
+      <if test="account.bankAccount != null">
+        bank_account,
+      </if>
+      <if test="account.bankName != null">
+        bank_name,
+      </if>
+      <if test="account.companyId != null">
+        company_id,
+      </if>
+      <if test="account.location != null">
+        location,
+      </if>
+      <if test="account.telephone != null">
+        telephone,
+      </if>
+      <if test="account.tfn != null">
+        tfn,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="account.id != null">
+        #{account.id,jdbcType=INTEGER},
+      </if>
+      <if test="account.bankAccount != null">
+        #{account.bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="account.bankName != null">
+        #{account.bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="account.companyId != null">
+        #{account.companyId,jdbcType=INTEGER},
+      </if>
+      <choose>
+        <when test="account.companyId != null">
+          #{account.companyId,jdbcType=INTEGER},
+        </when>
+        <otherwise>
+          #{companyId,jdbcType=INTEGER},
+        </otherwise>
+      </choose>
+      <if test="account.location != null">
+        #{account.location,jdbcType=VARCHAR},
+      </if>
+      <if test="account.telephone != null">
+        #{account.telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="account.tfn != null">
+        #{account.tfn,jdbcType=VARCHAR},
+      </if>
+    </trim>
+    ON DUPLICATE KEY UPDATE
+    <trim suffixOverrides=",">
+      <if test="bankAccount != null">bank_account = values(bank_account),</if>
+      <if test="bankName != null">bank_name = values(bank_name),</if>
+      <if test="location != null">location = values(location),</if>
+      <if test="telephone != null">telephone = values(telephone),</if>
+      <if test="tfn != null">tfn = values(tfn),</if>
+    </trim>
+  </insert>
+</mapper>

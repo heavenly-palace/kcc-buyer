@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.buyer.mapper.ProductMapper">
+  <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.Product">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="company_id" jdbcType="INTEGER" property="companyId" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="describe" jdbcType="VARCHAR" property="describe" />
+    <result column="pack" jdbcType="VARCHAR" property="pack" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="tax_rate" jdbcType="DOUBLE" property="taxRate" />
+    <result column="product_type" jdbcType="INTEGER" property="productType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, company_id, currency, `describe`, pack, price, tax_rate, `type`, status
+  </sql>
+
+  <select id="selectByCompanyId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product
+    where company_id = #{companyId,jdbcType=INTEGER}
+    <trim>
+        <if test="status != null">
+          and status = #{status,jdbcType=INTEGER}
+        </if>
+    </trim>
+  </select>
+
+  <insert id="insertOrUpdateProducts" parameterType="java.util.Map">
+    insert into product (id, company_id, currency,
+      `describe`, pack, price,
+      tax_rate, `type`, status)
+    values
+    <foreach collection="products" item="product" index="index" separator=",">
+        (
+            #{product.id,jdbcType=INTEGER},
+            <choose>
+                <when test="product.companyId != null">
+                    #{product.companyId,jdbcType=INTEGER},
+                </when>
+                <otherwise>
+                    #{companyId,jdbcType=INTEGER},
+                </otherwise>
+            </choose>
+            #{product.currency,jdbcType=VARCHAR},
+            #{product.describe,jdbcType=VARCHAR},
+            #{product.pack,jdbcType=VARCHAR},
+            #{product.price,jdbcType=DOUBLE},
+            #{product.taxRate,jdbcType=DOUBLE},
+            #{product.type,jdbcType=INTEGER},
+            #{product.status,jdbcType=INTEGER}
+        )
+    </foreach>
+    ON DUPLICATE KEY UPDATE
+    <trim suffixOverrides=",">
+      currency = values(currency),
+      `describe` = values(`describe`),
+      pack = values(pack),
+      price = values(price),
+      tax_rate = values(tax_rate),
+      `type` = values(`type`),
+      `status` = values(status),
+    </trim>
+  </insert>
+</mapper>
