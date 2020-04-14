@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +38,8 @@ public class BuyerController {
     @Autowired
     private AccountMapper accountMapper;
 
+    @Autowired
+    private ObjectUtil objectUtil;
 
     private static final Logger logger = LoggerFactory.getLogger(BuyerController.class);
 
@@ -46,30 +50,49 @@ public class BuyerController {
     public ResponseEntity createCompany(String request){
         Gson gson = new Gson();
         try {
-            Company company = gson.fromJson(request,new TypeToken<Company>() {}.getType());
-            if(ObjectUtil.checkObjFieldIsNull(company)){
-                companyMapper.insertOrUpdateCompany(company);
+            Company supplier = gson.fromJson(request,new TypeToken<Company>() {}.getType());
+            if(objectUtil.checkObjFieldIsNull(supplier)){
+                if(supplier.getId() == null) {
+                    SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
+                    Integer date = Integer.getInteger(f.format(new Date()));
+                }
+                companyMapper.insertOrUpdateCompany(supplier);
             }
-            if(company.getAccount() != null){
-                Account account = company.getAccount();
+            if(supplier.getAccount() != null){
+                Account account = supplier.getAccount();
                 Map<String, Object> map = new ConcurrentHashMap<>();
-                map.put("companyId", company.getId());
+                map.put("companyId", supplier.getId());
                 map.put("account",account);
                 accountMapper.insertOrUpdateAccount(map);
             }
-            if(!company.getProducts().isEmpty()){
-                List<Product> products = company.getProducts();
+            if(!supplier.getProducts().isEmpty()){
+                List<Product> products = supplier.getProducts();
                 Map<String, Object> map = new ConcurrentHashMap<>();
-                map.put("companyId", company.getId());
+                map.put("companyId", supplier.getId());
                 map.put("products", products);
                 productMapper.insertOrUpdateProducts(map);
             }
         } catch (JsonSyntaxException e) {
             logger.debug("supplier json does not match: " + e.getMessage());
-            return new ResponseEntity<>(400,"supplier json does not match");
+            return new ResponseEntity(400,"supplier json does not match");
         } catch (Exception e){
             logger.debug("create supplier failure: " + e.getMessage());
-            return new ResponseEntity<>(500, "create supplier failure");
+            return new ResponseEntity(500, "create supplier failure");
+        }
+        return ResponseEntity.ok();
+    }
+
+    @GET
+    @Path("/test")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    @Transactional(readOnly = true)
+    public ResponseEntity test(){
+        Company company = new Company();
+        company.setType(1);
+        try {
+            objectUtil.getCurrentNo(company);
+        } catch (Exception e) {
+            return new ResponseEntity(403,e.getMessage());
         }
         return ResponseEntity.ok();
     }
@@ -81,31 +104,26 @@ public class BuyerController {
     public ResponseEntity createBuyer(String request){
         Gson gson = new Gson();
         try {
-            Company company = gson.fromJson(request,new TypeToken<Company>() {}.getType());
-            if(ObjectUtil.checkObjFieldIsNull(company)){
-                companyMapper.insertOrUpdateCompany(company);
+            Company buyer = gson.fromJson(request,new TypeToken<Company>() {}.getType());
+            if(objectUtil.checkObjFieldIsNull(buyer)){
+                companyMapper.insertOrUpdateCompany(buyer);
             }
-            if(company.getAccount() != null){
-                Account account = company.getAccount();
+            if(buyer.getAccount() != null){
+                Account account = buyer.getAccount();
                 Map<String, Object> map = new ConcurrentHashMap<>();
-                map.put("companyId", company.getId());
+                map.put("companyId", buyer.getId());
                 map.put("account", account);
                 accountMapper.insertOrUpdateAccount(map);
             }
         } catch (JsonSyntaxException e) {
             logger.debug("buyer json does not match: " + e.getMessage());
-            return new ResponseEntity<>(400," buyer json does not match");
+            return new ResponseEntity(400," buyer json does not match");
         } catch (Exception e){
             logger.debug("create buyer failure: " + e.getMessage());
-            return new ResponseEntity<>(500, "create buyer failure");
+            return new ResponseEntity(500, "create buyer failure");
         }
         return ResponseEntity.ok();
     }
-
-
-
-
-
 
     @GET
     @Path("/company/{companyType}")
@@ -118,7 +136,7 @@ public class BuyerController {
         }else if(companyType.equals("buyer")){
             companies = companyMapper.selectByCompanyType(2);
         }
-        return new ResponseEntity<>(200, "success", companies);
+        return new ResponseEntity(200, "success", companies);
     }
 
     @GET
@@ -132,7 +150,7 @@ public class BuyerController {
         }else {
             products = productMapper.selectByCompanyId(companyId,null);
         }
-        return new ResponseEntity<>(200, "success", products);
+        return new ResponseEntity(200, "success", products);
     }
 
     @DELETE
@@ -141,7 +159,20 @@ public class BuyerController {
     @Transactional
     public ResponseEntity deleteCompany(@PathParam("companyId") Integer companyId){
         companyMapper.deleteByPrimaryKey(companyId);
+        logger.debug("delete the company with id " + companyId);
         return ResponseEntity.ok();
     }
+
+    @DELETE
+    @Path("/product/{productId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    @Transactional
+    public ResponseEntity deleteProduct(@PathParam("productId") Integer productId){
+        productMapper.deleteProductById(productId);
+        logger.debug("delete the product with id " + productId);
+        return ResponseEntity.ok();
+    }
+
+
 
 }

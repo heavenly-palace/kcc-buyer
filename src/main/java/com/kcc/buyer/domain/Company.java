@@ -9,6 +9,8 @@ public class Company implements Serializable {
 
     private Integer id;
 
+    private String no;
+
     private String cellphone;
 
     private Integer type;
@@ -37,6 +39,14 @@ public class Company implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getNo() {
+        return no;
+    }
+
+    public void setNo(String no) {
+        this.no = no;
     }
 
     public String getCellphone() {
@@ -125,5 +135,24 @@ public class Company implements Serializable {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", no='" + no + '\'' +
+                ", cellphone='" + cellphone + '\'' +
+                ", type=" + type +
+                ", contacts='" + contacts + '\'' +
+                ", email='" + email + '\'' +
+                ", fax='" + fax + '\'' +
+                ", location='" + location + '\'' +
+                ", name='" + name + '\'' +
+                ", telephone='" + telephone + '\'' +
+                ", comment='" + comment + '\'' +
+                ", account=" + account +
+                ", products=" + products +
+                '}';
     }
 }

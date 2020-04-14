@@ -10,4 +10,6 @@ public interface ProductMapper {
     int insertOrUpdateProducts(Map<String,Object> recordMap);
 
     List<Product> selectByCompanyId(Integer companyId, Integer status);
+
+    int deleteProductById(Integer id);
 }

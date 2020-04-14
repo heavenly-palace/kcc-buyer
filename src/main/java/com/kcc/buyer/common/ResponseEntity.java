@@ -1,12 +1,12 @@
 package com.kcc.buyer.common;
 
-public class ResponseEntity<T> {
+public class ResponseEntity {
 
     private int statusCode;
 
     private String message;
 
-    private T data;
+    private Object data;
 
     public ResponseEntity() {
     }
@@ -17,13 +17,13 @@ public class ResponseEntity<T> {
         this.message = message;
     }
 
-    public ResponseEntity(int statusCode, String message, T data) {
+    public ResponseEntity(int statusCode, String message, Object data) {
         this.statusCode = statusCode;
         this.message = message;
         this.data = data;
     }
 
-    public ResponseEntity(int statusCode, T data) {
+    public ResponseEntity(int statusCode, Object data) {
         this.statusCode = statusCode;
         this.data = data;
     }
@@ -36,11 +36,11 @@ public class ResponseEntity<T> {
         this.statusCode = statusCode;
     }
 
-    public T getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(T data) {
+    public void setData(Object data) {
         this.data = data;
     }
 

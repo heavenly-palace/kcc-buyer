@@ -8,6 +8,8 @@ public class Product implements Serializable {
 
     private Integer id;
 
+    private String no;
+
     private Integer companyId;
 
     private String currency;
@@ -30,6 +32,14 @@ public class Product implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getNo() {
+        return no;
+    }
+
+    public void setNo(String no) {
+        this.no = no;
     }
 
     public Integer getCompanyId() {
@@ -94,5 +104,21 @@ public class Product implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", no='" + no + '\'' +
+                ", companyId=" + companyId +
+                ", currency='" + currency + '\'' +
+                ", describe='" + describe + '\'' +
+                ", pack='" + pack + '\'' +
+                ", price=" + price +
+                ", taxRate=" + taxRate +
+                ", type=" + type +
+                ", status=" + status +
+                '}';
     }
 }

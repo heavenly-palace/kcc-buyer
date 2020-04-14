@@ -3,16 +3,18 @@
 <mapper namespace="com.kcc.buyer.mapper.ProductMapper">
   <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.Product">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="no" jdbcType="VARCHAR" property="no" />
     <result column="company_id" jdbcType="INTEGER" property="companyId" />
-    <result column="currency" jdbcType="VARCHAR" property="currency" />
     <result column="describe" jdbcType="VARCHAR" property="describe" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
     <result column="pack" jdbcType="VARCHAR" property="pack" />
     <result column="price" jdbcType="DOUBLE" property="price" />
     <result column="tax_rate" jdbcType="DOUBLE" property="taxRate" />
-    <result column="product_type" jdbcType="INTEGER" property="productType" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, company_id, currency, `describe`, pack, price, tax_rate, `type`, status
+    id, `no`, company_id, currency, `describe`, pack, price, tax_rate, `type`, status
   </sql>
 
   <select id="selectByCompanyId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -28,13 +30,14 @@
   </select>
 
   <insert id="insertOrUpdateProducts" parameterType="java.util.Map">
-    insert into product (id, company_id, currency,
+    insert into product (id, `no`, company_id, currency,
       `describe`, pack, price,
       tax_rate, `type`, status)
     values
     <foreach collection="products" item="product" index="index" separator=",">
         (
             #{product.id,jdbcType=INTEGER},
+            #{product.no,jdbcType=INTEGER},
             <choose>
                 <when test="product.companyId != null">
                     #{product.companyId,jdbcType=INTEGER},
@@ -63,4 +66,9 @@
       `status` = values(status),
     </trim>
   </insert>
+
+    <delete id="deleteProductById" parameterType="java.lang.Integer">
+        delete from product
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
 </mapper>

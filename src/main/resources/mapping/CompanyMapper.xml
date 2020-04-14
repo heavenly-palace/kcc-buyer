@@ -3,17 +3,19 @@
 <mapper namespace="com.kcc.buyer.mapper.CompanyMapper">
   <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.Company">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="no" jdbcType="VARCHAR" property="no" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
-    <result column="type" jdbcType="INTEGER" property="type" />
     <result column="contacts" jdbcType="VARCHAR" property="contacts" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="fax" jdbcType="VARCHAR" property="fax" />
     <result column="location" jdbcType="VARCHAR" property="location" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, cellphone, type, contacts, email, fax, location, `name`, telephone, `comment`
+    `id`, `no`, `name`, `cellphone`, `contacts`, `email`, `fax`, `location`, `telephone`, `type`, `comment`
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -41,11 +43,14 @@
       <if test="id != null">
         id,
       </if>
+      <if test="no != null">
+        `no`,
+      </if>
       <if test="cellphone != null">
         cellphone,
       </if>
       <if test="type != null">
-        type,
+        `type`,
       </if>
       <if test="contacts != null">
         contacts,
@@ -72,6 +77,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
+      </if>
+      <if test="no != null">
+        #{on,jdbcType=INTEGER},
       </if>
       <if test="cellphone != null">
         #{cellphone,jdbcType=VARCHAR},
@@ -113,4 +121,19 @@
       <if test="comment != null">comment = values(`comment`),</if>
     </trim>
   </insert>
+
+  <select id="selectCompanyByDateLast" parameterType="java.lang.String" resultType="java.lang.String">
+    select
+     `no`
+     from company
+     <trim prefix="where">
+       <if test="companyType != null">
+         `type`=#{companyType}
+       </if>
+       <if test="date != null">
+         and `no` like #{date}"%"
+       </if>
+       order by `no` desc LIMIT 1
+     </trim>
+  </select>
 </mapper>
