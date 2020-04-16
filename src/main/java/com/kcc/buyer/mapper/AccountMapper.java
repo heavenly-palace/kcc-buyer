@@ -2,11 +2,16 @@ package com.kcc.buyer.mapper;
 
 import com.kcc.buyer.domain.Account;
 
-import java.util.Map;
-
 public interface AccountMapper {
+    int deleteByPrimaryKey(Integer id);
 
-    int insertOrUpdateAccount(Map<String,Object> recordMap);
+    int insert(Account record);
+
+    int insertSelective(Account record);
 
     Account selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(Account record);
+
+    int updateByPrimaryKey(Account record);
 }

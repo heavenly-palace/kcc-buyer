@@ -1,28 +1,22 @@
 package com.kcc.buyer.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.kcc.buyer.common.ObjectUtil;
 import com.kcc.buyer.common.ResponseEntity;
-import com.kcc.buyer.domain.Account;
-import com.kcc.buyer.domain.Company;
-import com.kcc.buyer.domain.Product;
-import com.kcc.buyer.mapper.AccountMapper;
-import com.kcc.buyer.mapper.CompanyMapper;
-import com.kcc.buyer.mapper.ProductMapper;
+import com.kcc.buyer.domain.*;
+import com.kcc.buyer.mapper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 //@Singleton
 @Component
@@ -33,13 +27,28 @@ public class BuyerController {
     private CompanyMapper companyMapper;
 
     @Autowired
-    private ProductMapper productMapper;
-
-    @Autowired
     private AccountMapper accountMapper;
 
     @Autowired
+    private ProductMapper productMapper;
+
+    @Autowired
     private ObjectUtil objectUtil;
+
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Autowired
+    private OrderDetailMapper orderDetailMapper;
+
+    @Autowired
+    private CompanyInfoMapper companyInfoMapper;
+
+    @Autowired
+    private AccountInfoMapper accountInfoMapper;
+
+    @Autowired
+    private Gson gson ;
 
     private static final Logger logger = LoggerFactory.getLogger(BuyerController.class);
 
@@ -47,52 +56,57 @@ public class BuyerController {
     @Path("/company/supplier")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional
-    public ResponseEntity createCompany(String request){
-        Gson gson = new Gson();
+    public ResponseEntity createSupplier(String request){
         try {
             Company supplier = gson.fromJson(request,new TypeToken<Company>() {}.getType());
-            if(objectUtil.checkObjFieldIsNull(supplier)){
-                if(supplier.getId() == null) {
-                    SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
-                    Integer date = Integer.getInteger(f.format(new Date()));
-                }
-                companyMapper.insertOrUpdateCompany(supplier);
-            }
-            if(supplier.getAccount() != null){
+            if(!ObjectUtils.isEmpty(supplier)){
+                String currentNo = objectUtil.getCompanyNo(supplier);
+                supplier.setNo(currentNo);
+                companyMapper.insertSelective(supplier);
+
                 Account account = supplier.getAccount();
-                Map<String, Object> map = new ConcurrentHashMap<>();
-                map.put("companyId", supplier.getId());
-                map.put("account",account);
-                accountMapper.insertOrUpdateAccount(map);
+                account.setCompanyId(supplier.getId());
+                accountMapper.insertSelective(account);
+
+                List<Product> productList = supplier.getProductList();
+                productList = objectUtil.getProductNo(productList);
+                productList.forEach(product -> product.setCompanyId(supplier.getId()));
+                productMapper.insert(productList);
             }
-            if(!supplier.getProducts().isEmpty()){
-                List<Product> products = supplier.getProducts();
-                Map<String, Object> map = new ConcurrentHashMap<>();
-                map.put("companyId", supplier.getId());
-                map.put("products", products);
-                productMapper.insertOrUpdateProducts(map);
-            }
-        } catch (JsonSyntaxException e) {
-            logger.debug("supplier json does not match: " + e.getMessage());
-            return new ResponseEntity(400,"supplier json does not match");
         } catch (Exception e){
             logger.debug("create supplier failure: " + e.getMessage());
-            return new ResponseEntity(500, "create supplier failure");
+            throw new RuntimeException("create supplier failure: " + e.getMessage());
         }
         return ResponseEntity.ok();
     }
 
-    @GET
-    @Path("/test")
+    @PUT
+    @Path("/company/supplier")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
-    @Transactional(readOnly = true)
-    public ResponseEntity test(){
-        Company company = new Company();
-        company.setType(1);
+    @Transactional
+    public ResponseEntity updateSupplier(String request){
         try {
-            objectUtil.getCurrentNo(company);
-        } catch (Exception e) {
-            return new ResponseEntity(403,e.getMessage());
+            Company supplier = gson.fromJson(request,new TypeToken<Company>() {}.getType());
+            if(!ObjectUtils.isEmpty(supplier)){
+                if(supplier.getId() != null)
+                    companyMapper.updateByPrimaryKeySelective(supplier);
+
+                Account account = supplier.getAccount();
+                if(account != null && account.getId() != null)
+                    accountMapper.updateByPrimaryKeySelective(account);
+
+                List<Product> productList = supplier.getProductList();
+                if(!ObjectUtils.isEmpty(productList)){
+                    for (Product product:productList
+                    ) {
+                        if(product.getId() == null) productMapper.insertSelective(product);
+                        else productMapper.updateByPrimaryKeySelective(product);
+                    }
+                }
+            }
+        } catch (Exception e){
+            logger.debug("update supplier failure, message: " + e.getMessage());
+            throw new RuntimeException("update supplier failure, message: " + e.getMessage());
         }
         return ResponseEntity.ok();
     }
@@ -102,77 +116,82 @@ public class BuyerController {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional
     public ResponseEntity createBuyer(String request){
-        Gson gson = new Gson();
         try {
-            Company buyer = gson.fromJson(request,new TypeToken<Company>() {}.getType());
-            if(objectUtil.checkObjFieldIsNull(buyer)){
-                companyMapper.insertOrUpdateCompany(buyer);
+            Company supplier = gson.fromJson(request,new TypeToken<Company>() {}.getType());
+            if(!ObjectUtils.isEmpty(supplier)){
+                String currentNo = objectUtil.getCompanyNo(supplier);
+                supplier.setNo(currentNo);
+                companyMapper.insertSelective(supplier);
+
+                Account account = supplier.getAccount();
+                account.setCompanyId(supplier.getId());
+                accountMapper.insertSelective(account);
             }
-            if(buyer.getAccount() != null){
-                Account account = buyer.getAccount();
-                Map<String, Object> map = new ConcurrentHashMap<>();
-                map.put("companyId", buyer.getId());
-                map.put("account", account);
-                accountMapper.insertOrUpdateAccount(map);
-            }
-        } catch (JsonSyntaxException e) {
-            logger.debug("buyer json does not match: " + e.getMessage());
-            return new ResponseEntity(400," buyer json does not match");
         } catch (Exception e){
             logger.debug("create buyer failure: " + e.getMessage());
-            return new ResponseEntity(500, "create buyer failure");
+            throw new RuntimeException("create buyer failure: " + e.getMessage());
         }
         return ResponseEntity.ok();
     }
 
     @GET
     @Path("/company/{companyType}")
-    @Transactional(readOnly = true)
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
-    public ResponseEntity getCompanies(@PathParam("companyType") String companyType){
+    @Transactional(readOnly = true)
+    public ResponseEntity getCompany(@PathParam("companyType") String companyType){
         List<Company> companies = null;
-        if(companyType.equals("supplier")){
-            companies = companyMapper.selectByCompanyType(1);
-        }else if(companyType.equals("buyer")){
-            companies = companyMapper.selectByCompanyType(2);
+        if(companyType.equals("suppliers")){
+            companies = companyMapper.selectSelective(new Company(1));
+            return new ResponseEntity(200, "success", companies);
+        }else if(companyType.equals("buyers")){
+            companies = companyMapper.selectSelective(new Company(2));
         }
         return new ResponseEntity(200, "success", companies);
     }
 
     @GET
-    @Path("/products/{companyId}/{status}")
+    @Path("/products/{supplierId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional(readOnly = true)
-    public ResponseEntity getProductsByStatus(@PathParam("companyId") Integer companyId, @PathParam("status") Integer status){
-        List<Product> products;
-        if (status == 1 || status == 2){
-            products = productMapper.selectByCompanyId(companyId,status);
-        }else {
-            products = productMapper.selectByCompanyId(companyId,null);
+    public ResponseEntity getProducts(@PathParam("supplierId") Integer supplierId){
+        Product product = new Product();
+        product.setCompanyId(supplierId);
+        List<Product> productList = productMapper.selectBySelective(product);
+        return new ResponseEntity(200, "success", productList);
+    }
+
+    @POST
+    @Path("/order")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    @Transactional(readOnly = true)
+    public ResponseEntity createOrder(String request){
+        Order order = gson.fromJson(request,new TypeToken<Order>() {}.getType());
+        if(!ObjectUtils.isEmpty(order)){
+            String orderUuid = UUID.randomUUID().toString();
+            order.setOrderUuid(orderUuid);
+            orderMapper.insertSelective(order);
+
+            List<CompanyInfo> companyInfoList = order.getCompanyInfoList();
+            companyInfoList.forEach(companyInfo -> {
+                companyInfo.setOrderId(order.getId());
+                companyInfoMapper.insertSelective(companyInfo);
+
+                AccountInfo accountInfo = companyInfo.getAccountInfo();
+                accountInfo.setCompanyInfoId(companyInfo.getId());
+                accountInfoMapper.insertSelective(accountInfo);
+            });
+
+            List<OrderDetail> orderDetailList = order.getOrderDetailList();
+            orderDetailList.forEach(orderDetail -> orderDetail.setOrderId(order.getId()));
+            orderDetailMapper.insert(orderDetailList);
         }
-        return new ResponseEntity(200, "success", products);
-    }
-
-    @DELETE
-    @Path("/company/{companyId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
-    @Transactional
-    public ResponseEntity deleteCompany(@PathParam("companyId") Integer companyId){
-        companyMapper.deleteByPrimaryKey(companyId);
-        logger.debug("delete the company with id " + companyId);
         return ResponseEntity.ok();
     }
 
-    @DELETE
-    @Path("/product/{productId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
-    @Transactional
-    public ResponseEntity deleteProduct(@PathParam("productId") Integer productId){
-        productMapper.deleteProductById(productId);
-        logger.debug("delete the product with id " + productId);
-        return ResponseEntity.ok();
+    public ResponseEntity getOrder(){
+
+
+        return null;
     }
-
-
 
 }

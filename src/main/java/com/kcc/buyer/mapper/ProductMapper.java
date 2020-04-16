@@ -3,13 +3,21 @@ package com.kcc.buyer.mapper;
 import com.kcc.buyer.domain.Product;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ProductMapper {
+    int deleteByPrimaryKey(Integer id);
 
-    int insertOrUpdateProducts(Map<String,Object> recordMap);
+    int insert(List<Product> productList);
 
-    List<Product> selectByCompanyId(Integer companyId, Integer status);
+    int insertSelective(Product record);
 
-    int deleteProductById(Integer id);
+    Product selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(Product record);
+
+    int updateByPrimaryKey(Product record);
+
+    String selectCurrentLastNo(String date);
+
+    List<Product> selectBySelective(Product product);
 }

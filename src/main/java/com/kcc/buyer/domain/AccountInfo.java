@@ -1,13 +1,13 @@
 package com.kcc.buyer.domain;
 
-public class Account {
+public class AccountInfo {
     private Integer id;
 
-    private Integer companyId;
-
-    private String bankName;
+    private Integer companyInfoId;
 
     private String bankAccount;
+
+    private String bankName;
 
     private String location;
 
@@ -23,20 +23,12 @@ public class Account {
         this.id = id;
     }
 
-    public Integer getCompanyId() {
-        return companyId;
+    public Integer getCompanyInfoId() {
+        return companyInfoId;
     }
 
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
-
-    public String getBankName() {
-        return bankName;
-    }
-
-    public void setBankName(String bankName) {
-        this.bankName = bankName == null ? null : bankName.trim();
+    public void setCompanyInfoId(Integer companyInfoId) {
+        this.companyInfoId = companyInfoId;
     }
 
     public String getBankAccount() {
@@ -45,6 +37,14 @@ public class Account {
 
     public void setBankAccount(String bankAccount) {
         this.bankAccount = bankAccount == null ? null : bankAccount.trim();
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName == null ? null : bankName.trim();
     }
 
     public String getLocation() {
@@ -69,18 +69,5 @@ public class Account {
 
     public void setTfn(String tfn) {
         this.tfn = tfn == null ? null : tfn.trim();
-    }
-
-    @Override
-    public String toString() {
-        return "Account{" +
-                "id=" + id +
-                ", companyId=" + companyId +
-                ", bankName='" + bankName + '\'' +
-                ", bankAccount='" + bankAccount + '\'' +
-                ", location='" + location + '\'' +
-                ", telephone='" + telephone + '\'' +
-                ", tfn='" + tfn + '\'' +
-                '}';
     }
 }

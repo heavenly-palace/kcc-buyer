@@ -14,7 +14,7 @@ public class GeneratorSqlmap {
         List<String> warnings = new ArrayList<String>();
         boolean overwrite = true;
         // 指定配置文件
-        File configFile = new File("/Users/domain/ONAP_Project/kcc-buyer/src/main/resources/generatorConfig.xml");
+        File configFile = new File("C:\\Users\\w10ws\\Documents\\project\\kcc-buyer\\src\\main\\resources\\generatorConfig.xml");
         ConfigurationParser cp = new ConfigurationParser(warnings);
         Configuration config = cp.parseConfiguration(configFile);
         DefaultShellCallback callback = new DefaultShellCallback(overwrite);

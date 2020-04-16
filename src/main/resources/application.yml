@@ -18,7 +18,7 @@ spring:
       connection-timeout: 30000
       connection-test-query: SELECT 1
       registerMbeans: true
-      jdbc-url: jdbc:mysql://127.0.0.1:3306/kcc?serverTimezone=Hongkong&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
+      jdbc-url: jdbc:mysql://192.168.27.73:3306/kcc?serverTimezone=Hongkong&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
       username: root
       password: ShallLi@0517
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -41,3 +41,4 @@ logging:
       kcc:
         buyer:
           mapper: debug
+          controller: debug

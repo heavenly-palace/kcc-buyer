@@ -1,50 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kcc.buyer.mapper.AccountMapper">
-  <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.Account">
+<mapper namespace="com.kcc.buyer.mapper.AccountInfoMapper">
+  <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.AccountInfo">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="company_id" jdbcType="INTEGER" property="companyId" />
-    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
+    <result column="company_info_id" jdbcType="INTEGER" property="companyInfoId" />
     <result column="bank_account" jdbcType="VARCHAR" property="bankAccount" />
+    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
     <result column="location" jdbcType="VARCHAR" property="location" />
     <result column="telephone" jdbcType="VARCHAR" property="telephone" />
     <result column="tfn" jdbcType="VARCHAR" property="tfn" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, company_id, bank_name, bank_account, location, telephone, tfn
+    id, company_info_id, bank_account, bank_name, location, telephone, tfn
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from account
+    from account_info
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from account
+    delete from account_info
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.kcc.buyer.domain.Account">
-    insert into account (id, company_id, bank_name, 
-      bank_account, location, telephone, 
+  <insert id="insert" parameterType="com.kcc.buyer.domain.AccountInfo">
+    insert into account_info (id, company_info_id, bank_account, 
+      bank_name, location, telephone, 
       tfn)
-    values (#{id,jdbcType=INTEGER}, #{companyId,jdbcType=INTEGER}, #{bankName,jdbcType=VARCHAR}, 
-      #{bankAccount,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{companyInfoId,jdbcType=INTEGER}, #{bankAccount,jdbcType=VARCHAR}, 
+      #{bankName,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
       #{tfn,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.kcc.buyer.domain.Account">
-    insert into account
+  <insert id="insertSelective" parameterType="com.kcc.buyer.domain.AccountInfo" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    insert into account_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="companyId != null">
-        company_id,
-      </if>
-      <if test="bankName != null">
-        bank_name,
+      <if test="companyInfoId != null">
+        company_info_id,
       </if>
       <if test="bankAccount != null">
         bank_account,
+      </if>
+      <if test="bankName != null">
+        bank_name,
       </if>
       <if test="location != null">
         location,
@@ -60,14 +60,14 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="companyId != null">
-        #{companyId,jdbcType=INTEGER},
-      </if>
-      <if test="bankName != null">
-        #{bankName,jdbcType=VARCHAR},
+      <if test="companyInfoId != null">
+        #{companyInfoId,jdbcType=INTEGER},
       </if>
       <if test="bankAccount != null">
         #{bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        #{bankName,jdbcType=VARCHAR},
       </if>
       <if test="location != null">
         #{location,jdbcType=VARCHAR},
@@ -80,17 +80,17 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.kcc.buyer.domain.Account">
-    update account
+  <update id="updateByPrimaryKeySelective" parameterType="com.kcc.buyer.domain.AccountInfo">
+    update account_info
     <set>
-      <if test="companyId != null">
-        company_id = #{companyId,jdbcType=INTEGER},
-      </if>
-      <if test="bankName != null">
-        bank_name = #{bankName,jdbcType=VARCHAR},
+      <if test="companyInfoId != null">
+        company_info_id = #{companyInfoId,jdbcType=INTEGER},
       </if>
       <if test="bankAccount != null">
         bank_account = #{bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        bank_name = #{bankName,jdbcType=VARCHAR},
       </if>
       <if test="location != null">
         location = #{location,jdbcType=VARCHAR},
@@ -104,11 +104,11 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.kcc.buyer.domain.Account">
-    update account
-    set company_id = #{companyId,jdbcType=INTEGER},
-      bank_name = #{bankName,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.kcc.buyer.domain.AccountInfo">
+    update account_info
+    set company_info_id = #{companyInfoId,jdbcType=INTEGER},
       bank_account = #{bankAccount,jdbcType=VARCHAR},
+      bank_name = #{bankName,jdbcType=VARCHAR},
       location = #{location,jdbcType=VARCHAR},
       telephone = #{telephone,jdbcType=VARCHAR},
       tfn = #{tfn,jdbcType=VARCHAR}

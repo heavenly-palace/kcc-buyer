@@ -1,19 +1,15 @@
 package com.kcc.buyer.domain;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class Company implements Serializable {
-
-    private static final long serialVersionUID = 9058075413785615746L;
-
+public class Company {
     private Integer id;
 
     private String no;
 
-    private String cellphone;
+    private String name;
 
-    private Integer type;
+    private String cellphone;
 
     private String contacts;
 
@@ -23,15 +19,22 @@ public class Company implements Serializable {
 
     private String location;
 
-    private String name;
-
     private String telephone;
+
+    private Integer type;
 
     private String comment;
 
     private Account account;
 
-    private List<Product> products;
+    private List<Product> productList;
+
+    public Company() {
+    }
+
+    public Company(Integer type) {
+        this.type = type;
+    }
 
     public Integer getId() {
         return id;
@@ -46,7 +49,15 @@ public class Company implements Serializable {
     }
 
     public void setNo(String no) {
-        this.no = no;
+        this.no = no == null ? null : no.trim();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 
     public String getCellphone() {
@@ -55,14 +66,6 @@ public class Company implements Serializable {
 
     public void setCellphone(String cellphone) {
         this.cellphone = cellphone == null ? null : cellphone.trim();
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public String getContacts() {
@@ -97,14 +100,6 @@ public class Company implements Serializable {
         this.location = location == null ? null : location.trim();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
     public String getTelephone() {
         return telephone;
     }
@@ -113,12 +108,20 @@ public class Company implements Serializable {
         this.telephone = telephone == null ? null : telephone.trim();
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public String getComment() {
         return comment;
     }
 
     public void setComment(String comment) {
-        this.comment = comment;
+        this.comment = comment == null ? null : comment.trim();
     }
 
     public Account getAccount() {
@@ -129,12 +132,12 @@ public class Company implements Serializable {
         this.account = account;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<Product> getProductList() {
+        return productList;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
     }
 
     @Override
@@ -142,17 +145,17 @@ public class Company implements Serializable {
         return "Company{" +
                 "id=" + id +
                 ", no='" + no + '\'' +
+                ", name='" + name + '\'' +
                 ", cellphone='" + cellphone + '\'' +
-                ", type=" + type +
                 ", contacts='" + contacts + '\'' +
                 ", email='" + email + '\'' +
                 ", fax='" + fax + '\'' +
                 ", location='" + location + '\'' +
-                ", name='" + name + '\'' +
                 ", telephone='" + telephone + '\'' +
+                ", type=" + type +
                 ", comment='" + comment + '\'' +
                 ", account=" + account +
-                ", products=" + products +
+                ", productList=" + productList +
                 '}';
     }
 }

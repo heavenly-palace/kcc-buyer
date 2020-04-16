@@ -1,20 +1,15 @@
 package com.kcc.buyer.domain;
 
-import java.io.Serializable;
-
-public class Product implements Serializable {
-
-    private static final long serialVersionUID = -3136473120816263736L;
-
+public class Product {
     private Integer id;
 
     private String no;
 
     private Integer companyId;
 
-    private String currency;
-
     private String describe;
+
+    private String currency;
 
     private String pack;
 
@@ -39,7 +34,7 @@ public class Product implements Serializable {
     }
 
     public void setNo(String no) {
-        this.no = no;
+        this.no = no == null ? null : no.trim();
     }
 
     public Integer getCompanyId() {
@@ -50,20 +45,20 @@ public class Product implements Serializable {
         this.companyId = companyId;
     }
 
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency == null ? null : currency.trim();
-    }
-
     public String getDescribe() {
         return describe;
     }
 
     public void setDescribe(String describe) {
         this.describe = describe == null ? null : describe.trim();
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency == null ? null : currency.trim();
     }
 
     public String getPack() {
@@ -112,8 +107,8 @@ public class Product implements Serializable {
                 "id=" + id +
                 ", no='" + no + '\'' +
                 ", companyId=" + companyId +
-                ", currency='" + currency + '\'' +
                 ", describe='" + describe + '\'' +
+                ", currency='" + currency + '\'' +
                 ", pack='" + pack + '\'' +
                 ", price=" + price +
                 ", taxRate=" + taxRate +

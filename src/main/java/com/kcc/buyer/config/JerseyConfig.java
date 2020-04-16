@@ -1,5 +1,6 @@
 package com.kcc.buyer.config;
 
+import com.kcc.buyer.controller.BuyerController;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +14,7 @@ public class JerseyConfig extends ResourceConfig {
      * scanning com.kcc.buyer.controller package，Make it recognize jax-rs annotations
      */
     public JerseyConfig() {
-        packages("com.kcc.buyer.controller");
+        register(BuyerController.class);
         register(MultiPartFeature.class);
     }
 }

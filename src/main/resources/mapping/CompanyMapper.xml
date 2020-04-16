@@ -15,42 +15,85 @@
     <result column="comment" jdbcType="VARCHAR" property="comment" />
   </resultMap>
   <sql id="Base_Column_List">
-    `id`, `no`, `name`, `cellphone`, `contacts`, `email`, `fax`, `location`, `telephone`, `type`, `comment`
+    id, `no`, `name`, cellphone, contacts, email, fax, location, telephone, `type`, comment
   </sql>
-
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from company
     where id = #{id,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectCurrentLastNo" parameterType="java.util.Map" resultType="java.lang.String">
+    select `no` from company where `type` = #{type} and `no` like #{date}"%" order by `no` desc limit 1
+  </select>
 
-  <select id="selectByCompanyType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectSelective" parameterType="com.kcc.buyer.domain.Company" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from company
-    where type = #{type,jdbcType=INTEGER}
+    <trim prefix="where" prefixOverrides="and">
+      <if test="id != null">
+        and id = #{id}
+      </if>
+      <if test="no != null">
+        and `no` = #{no}
+      </if>
+      <if test="name != null">
+        and `name` = #{name}
+      </if>
+      <if test="cellphone != null">
+        and cellphone = #{cellphone}
+      </if>
+      <if test="contacts != null">
+        and contacts = #{contacts}
+      </if>
+      <if test="email != null">
+        and email = #{email}
+      </if>
+      <if test="fax != null">
+        and fax = #{fax}
+      </if>
+      <if test="location != null">
+        and location = #{location}
+      </if>
+      <if test="telephone != null">
+        and telephone = #{telephone}
+      </if>
+      <if test="type != null">
+        and `type` = #{type}
+      </if>
+    </trim>
   </select>
-
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from company
     where id = #{id,jdbcType=INTEGER}
   </delete>
-
-  <insert id="insertOrUpdateCompany" parameterType="com.kcc.buyer.domain.Company" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+  <insert id="insert" parameterType="com.kcc.buyer.domain.Company">
+    insert into company (id, no, name, 
+      cellphone, contacts, email, 
+      fax, location, telephone, 
+      type, comment)
+    values (#{id,jdbcType=INTEGER}, #{no,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{cellphone,jdbcType=VARCHAR}, #{contacts,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{fax,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{comment,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kcc.buyer.domain.Company" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
     insert into company
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
       <if test="no != null">
-        `no`,
+        no,
+      </if>
+      <if test="name != null">
+        name,
       </if>
       <if test="cellphone != null">
         cellphone,
-      </if>
-      <if test="type != null">
-        `type`,
       </if>
       <if test="contacts != null">
         contacts,
@@ -64,14 +107,14 @@
       <if test="location != null">
         location,
       </if>
-      <if test="name != null">
-        `name`,
-      </if>
       <if test="telephone != null">
         telephone,
       </if>
+      <if test="type != null">
+        type,
+      </if>
       <if test="comment != null">
-        `comment`,
+        comment,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -79,13 +122,13 @@
         #{id,jdbcType=INTEGER},
       </if>
       <if test="no != null">
-        #{on,jdbcType=INTEGER},
+        #{no,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
       </if>
       <if test="cellphone != null">
         #{cellphone,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null">
-        #{type,jdbcType=INTEGER},
       </if>
       <if test="contacts != null">
         #{contacts,jdbcType=VARCHAR},
@@ -99,41 +142,65 @@
       <if test="location != null">
         #{location,jdbcType=VARCHAR},
       </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
       <if test="telephone != null">
         #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
       </if>
       <if test="comment != null">
         #{comment,jdbcType=VARCHAR},
       </if>
     </trim>
-    ON DUPLICATE KEY UPDATE
-    <trim suffixOverrides=",">
-      <if test="cellphone != null">cellphone = values(cellphone),</if>
-      <if test="contacts != null">contacts = values(contacts),</if>
-      <if test="email != null">email = values(email),</if>
-      <if test="fax != null">fax = values(fax),</if>
-      <if test="location != null">location = values(location),</if>
-      <if test="name != null">`name` = values(name),</if>
-      <if test="telephone != null">telephone = values(telephone),</if>
-      <if test="comment != null">comment = values(`comment`),</if>
-    </trim>
   </insert>
-
-  <select id="selectCompanyByDateLast" parameterType="java.lang.String" resultType="java.lang.String">
-    select
-     `no`
-     from company
-     <trim prefix="where">
-       <if test="companyType != null">
-         `type`=#{companyType}
-       </if>
-       <if test="date != null">
-         and `no` like #{date}"%"
-       </if>
-       order by `no` desc LIMIT 1
-     </trim>
-  </select>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kcc.buyer.domain.Company">
+    update company
+    <set>
+      <if test="no != null">
+        `no` = #{no,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="cellphone != null">
+        cellphone = #{cellphone,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null">
+        contacts = #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null">
+        fax = #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        location = #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="comment != null">
+        comment = #{comment,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kcc.buyer.domain.Company">
+    update company
+    set no = #{no,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      cellphone = #{cellphone,jdbcType=VARCHAR},
+      contacts = #{contacts,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      fax = #{fax,jdbcType=VARCHAR},
+      location = #{location,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      comment = #{comment,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

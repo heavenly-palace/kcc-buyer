@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.buyer.mapper.OrderDetailMapper">
+  <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.OrderDetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="describe" jdbcType="VARCHAR" property="describe" />
+    <result column="pack" jdbcType="VARCHAR" property="pack" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="supply_date" jdbcType="VARCHAR" property="supplyDate" />
+    <result column="tax_rate" jdbcType="DOUBLE" property="taxRate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_id, currency, describe, pack, price, quantity, supply_date, tax_rate
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from order_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kcc.buyer.domain.OrderDetail">
+    insert into order_detail (id, order_id, currency, 
+      describe, pack, price, 
+      quantity, supply_date, tax_rate
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{currency,jdbcType=VARCHAR}, 
+      #{describe,jdbcType=VARCHAR}, #{pack,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}, 
+      #{quantity,jdbcType=INTEGER}, #{supplyDate,jdbcType=VARCHAR}, #{taxRate,jdbcType=DOUBLE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.kcc.buyer.domain.OrderDetail">
+    insert into order_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="currency != null">
+        currency,
+      </if>
+      <if test="describe != null">
+        describe,
+      </if>
+      <if test="pack != null">
+        pack,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="quantity != null">
+        quantity,
+      </if>
+      <if test="supplyDate != null">
+        supply_date,
+      </if>
+      <if test="taxRate != null">
+        tax_rate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="describe != null">
+        #{describe,jdbcType=VARCHAR},
+      </if>
+      <if test="pack != null">
+        #{pack,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="quantity != null">
+        #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="supplyDate != null">
+        #{supplyDate,jdbcType=VARCHAR},
+      </if>
+      <if test="taxRate != null">
+        #{taxRate,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kcc.buyer.domain.OrderDetail">
+    update order_detail
+    <set>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="describe != null">
+        describe = #{describe,jdbcType=VARCHAR},
+      </if>
+      <if test="pack != null">
+        pack = #{pack,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="quantity != null">
+        quantity = #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="supplyDate != null">
+        supply_date = #{supplyDate,jdbcType=VARCHAR},
+      </if>
+      <if test="taxRate != null">
+        tax_rate = #{taxRate,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kcc.buyer.domain.OrderDetail">
+    update order_detail
+    set order_id = #{orderId,jdbcType=INTEGER},
+      currency = #{currency,jdbcType=VARCHAR},
+      describe = #{describe,jdbcType=VARCHAR},
+      pack = #{pack,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DOUBLE},
+      quantity = #{quantity,jdbcType=INTEGER},
+      supply_date = #{supplyDate,jdbcType=VARCHAR},
+      tax_rate = #{taxRate,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
