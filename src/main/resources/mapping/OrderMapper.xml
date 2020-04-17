@@ -12,21 +12,24 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from order
-    where id = #{id,jdbcType=INTEGER}
+    from `order`
+    where 1=1
+    <if test="id != null">
+      id = #{id,jdbcType=INTEGER}
+    </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from order
+    delete from `order`
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.kcc.buyer.domain.Order">
-    insert into order (id, order_uuid, comment
+    insert into `order` (id, order_uuid, comment
       )
     values (#{id,jdbcType=INTEGER}, #{orderUuid,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.kcc.buyer.domain.Order">
-    insert into order
+  <insert id="insertSelective" parameterType="com.kcc.buyer.domain.Order" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into `order`
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -51,7 +54,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.kcc.buyer.domain.Order">
-    update order
+    update `order`
     <set>
       <if test="orderUuid != null">
         order_uuid = #{orderUuid,jdbcType=VARCHAR},
@@ -63,7 +66,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.kcc.buyer.domain.Order">
-    update order
+    update `order`
     set order_uuid = #{orderUuid,jdbcType=VARCHAR},
       comment = #{comment,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}

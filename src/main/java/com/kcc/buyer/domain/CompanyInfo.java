@@ -12,7 +12,7 @@ public class CompanyInfo implements Serializable {
 
     private Integer orderId;
 
-    private Integer companyType;
+    private Integer type;
 
     private String contacts;
 
@@ -27,6 +27,13 @@ public class CompanyInfo implements Serializable {
     private String telephone;
 
     private AccountInfo accountInfo;
+
+    public CompanyInfo() {
+    }
+
+    public CompanyInfo(Integer orderId) {
+        this.orderId = orderId;
+    }
 
     public Integer getId() {
         return id;
@@ -52,12 +59,12 @@ public class CompanyInfo implements Serializable {
         this.orderId = orderId;
     }
 
-    public Integer getCompanyType() {
-        return companyType;
+    public Integer getType() {
+        return type;
     }
 
-    public void setCompanyType(Integer companyType) {
-        this.companyType = companyType;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getContacts() {
@@ -122,7 +129,7 @@ public class CompanyInfo implements Serializable {
                 "id=" + id +
                 ", cellphone='" + cellphone + '\'' +
                 ", orderId=" + orderId +
-                ", companyType=" + companyType +
+                ", companyType=" + type +
                 ", contacts='" + contacts + '\'' +
                 ", email='" + email + '\'' +
                 ", fax='" + fax + '\'' +

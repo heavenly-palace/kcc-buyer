@@ -13,8 +13,42 @@
     <result column="tax_rate" jdbcType="DOUBLE" property="taxRate" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_id, currency, describe, pack, price, quantity, supply_date, tax_rate
+    id, order_id, currency, `describe`, pack, price, quantity, supply_date, tax_rate
   </sql>
+  <select id="selectSelective" parameterType="com.kcc.buyer.domain.OrderDetail" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_detail
+    <trim prefix="where" prefixOverrides="and">
+      <if test="id != null">
+        and id=#{id,jdbcType=INTEGER}
+      </if>
+      <if test="orderId != null">
+        and order_id=#{orderId,jdbcType=VARCHAR}
+      </if>
+      <if test="currency != null">
+        and currency=#{currency,jdbcType=VARCHAR}
+      </if>
+      <if test="describe != null">
+        and `describe`=#{describe,jdbcType=VARCHAR}
+      </if>
+      <if test="pack != null">
+        and pack#{pack,jdbcType=VARCHAR}
+      </if>
+      <if test="price != null">
+        and price=#{price,jdbcType=DOUBLE}
+      </if>
+      <if test="quantity != null">
+        and quantity=#{quantity,jdbcType=INTEGER}
+      </if>
+      <if test="supplyDate != null">
+        and supply_date=#{supplyDate,jdbcType=VARCHAR}
+      </if>
+      <if test="taxRate != null">
+        and tax_rate=#{taxRate,jdbcType=DOUBLE}
+      </if>
+    </trim>
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -25,15 +59,17 @@
     delete from order_detail
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.kcc.buyer.domain.OrderDetail">
+  <insert id="insert" parameterType="java.util.List">
     insert into order_detail (id, order_id, currency, 
-      describe, pack, price, 
-      quantity, supply_date, tax_rate
+      `describe`, pack, price,
+      quantity, supply_date, tax_rate )
+    values
+    <foreach collection="collection" item="orderDetail" index="index" separator=",">
+      (#{orderDetail.id,jdbcType=INTEGER}, #{orderDetail.orderId,jdbcType=INTEGER}, #{orderDetail.currency,jdbcType=VARCHAR},
+      #{orderDetail.describe,jdbcType=VARCHAR}, #{orderDetail.pack,jdbcType=VARCHAR}, #{orderDetail.price,jdbcType=DOUBLE},
+      #{orderDetail.quantity,jdbcType=INTEGER}, #{orderDetail.supplyDate,jdbcType=VARCHAR}, #{orderDetail.taxRate,jdbcType=DOUBLE}
       )
-    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{currency,jdbcType=VARCHAR}, 
-      #{describe,jdbcType=VARCHAR}, #{pack,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}, 
-      #{quantity,jdbcType=INTEGER}, #{supplyDate,jdbcType=VARCHAR}, #{taxRate,jdbcType=DOUBLE}
-      )
+    </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.kcc.buyer.domain.OrderDetail">
     insert into order_detail

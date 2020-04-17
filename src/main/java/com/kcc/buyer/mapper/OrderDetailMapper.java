@@ -17,4 +17,6 @@ public interface OrderDetailMapper {
 
     int updateByPrimaryKey(OrderDetail record);
 
+    List<OrderDetail> selectSelective(OrderDetail orderDetail);
+
 }

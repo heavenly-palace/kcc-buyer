@@ -1,5 +1,6 @@
 package com.kcc.buyer.controller;
 
+import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kcc.buyer.common.ObjectUtil;
@@ -16,7 +17,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 //@Singleton
 @Component
@@ -134,19 +134,56 @@ public class BuyerController {
         return ResponseEntity.ok();
     }
 
+    @PUT
+    @Path("/company/buyer")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    @Transactional
+    public ResponseEntity updateBuyer(String request){
+        try {
+            Company supplier = gson.fromJson(request,new TypeToken<Company>() {}.getType());
+            if(!ObjectUtils.isEmpty(supplier)){
+                companyMapper.updateByPrimaryKeySelective(supplier);
+
+                Account account = supplier.getAccount();
+                accountMapper.updateByPrimaryKeySelective(account);
+            }
+        } catch (Exception e){
+            logger.debug("create buyer failure: " + e.getMessage());
+            throw new RuntimeException("create buyer failure: " + e.getMessage());
+        }
+        return ResponseEntity.ok();
+    }
+
     @GET
     @Path("/company/{companyType}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional(readOnly = true)
-    public ResponseEntity getCompany(@PathParam("companyType") String companyType){
+    public ResponseEntity getCompanyAll(@PathParam("companyType") String companyType){
         List<Company> companies = null;
         if(companyType.equals("suppliers")){
             companies = companyMapper.selectSelective(new Company(1));
             return new ResponseEntity(200, "success", companies);
         }else if(companyType.equals("buyers")){
             companies = companyMapper.selectSelective(new Company(2));
+        }else {
+            return new ResponseEntity(405,"");
         }
         return new ResponseEntity(200, "success", companies);
+    }
+
+    @GET
+    @Path("/company/supplier/{companyId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    @Transactional(readOnly = true)
+    public ResponseEntity getCompany(@PathParam("companyId") Integer companyId){
+        Company company = companyMapper.selectByPrimaryKey(companyId);
+        if(company != null){
+            Account account = accountMapper.selectSelective(new Account(companyId));
+            List<Product> productList = productMapper.selectBySelective(new Product(companyId));
+            company.setAccount(account);
+            company.setProductList(productList);
+        }
+        return new ResponseEntity(200, "success", company);
     }
 
     @GET
@@ -163,7 +200,7 @@ public class BuyerController {
     @POST
     @Path("/order")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity createOrder(String request){
         Order order = gson.fromJson(request,new TypeToken<Order>() {}.getType());
         if(!ObjectUtils.isEmpty(order)){
@@ -188,10 +225,26 @@ public class BuyerController {
         return ResponseEntity.ok();
     }
 
+    @GET
+    @Path("/order/details")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    @Transactional(readOnly = true)
     public ResponseEntity getOrder(){
+        PageHelper.startPage(1, 10);
+        List<Order> orderList = orderMapper.selectByPrimaryKey(null);
+        if(!ObjectUtils.isEmpty(orderList)){
+            for (Order order:orderList
+                 ) {
+                Integer orderId = order.getId();
+                List<CompanyInfo> companyInfoList = companyInfoMapper.selectSelective(new CompanyInfo(orderId));
+                order.setCompanyInfoList(companyInfoList);
 
+                List<OrderDetail> orderDetails = orderDetailMapper.selectSelective(new OrderDetail(orderId));
+                order.setOrderDetailList(orderDetails);
+            }
+        }
+        return new ResponseEntity(200,"success",orderList);
 
-        return null;
     }
 
 }

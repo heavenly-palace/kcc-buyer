@@ -15,6 +15,13 @@ public class Account {
 
     private String tfn;
 
+    public Account() {
+    }
+
+    public Account(Integer companyId) {
+        this.companyId = companyId;
+    }
+
     public Integer getId() {
         return id;
     }

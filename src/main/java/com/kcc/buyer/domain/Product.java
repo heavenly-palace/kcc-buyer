@@ -21,6 +21,13 @@ public class Product {
 
     private Integer status;
 
+    public Product() {
+    }
+
+    public Product(Integer companyId) {
+        this.companyId = companyId;
+    }
+
     public Integer getId() {
         return id;
     }

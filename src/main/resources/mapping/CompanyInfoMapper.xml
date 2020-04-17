@@ -5,7 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
     <result column="order_id" jdbcType="INTEGER" property="orderId" />
-    <result column="company_type" jdbcType="INTEGER" property="companyType" />
+    <result column="type" jdbcType="INTEGER" property="type" />
     <result column="contacts" jdbcType="VARCHAR" property="contacts" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="fax" jdbcType="VARCHAR" property="fax" />
@@ -14,8 +14,45 @@
     <result column="telephone" jdbcType="VARCHAR" property="telephone" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, cellphone, order_id, company_type, contacts, email, fax, location, name, telephone
+    id, cellphone, order_id, `type`, contacts, email, fax, location, `name`, telephone
   </sql>
+  <select id="selectSelective" parameterType="com.kcc.buyer.domain.CompanyInfo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from company_info
+    <trim prefix="where" prefixOverrides="and">
+      <if test="id != null">
+        and id=#{id,jdbcType=INTEGER}
+      </if>
+      <if test="cellphone != null">
+        and cellphone=#{cellphone,jdbcType=VARCHAR}
+      </if>
+      <if test="orderId != null">
+        and order_id=#{orderId,jdbcType=VARCHAR}
+      </if>
+      <if test="type != null">
+        and `type`=#{type,jdbcType=INTEGER}
+      </if>
+      <if test="contacts != null">
+        and contacts=#{contacts,jdbcType=VARCHAR}
+      </if>
+      <if test="email != null">
+        and email=#{email,jdbcType=VARCHAR}
+      </if>
+      <if test="fax != null">
+        and fax=#{fax,jdbcType=VARCHAR}
+      </if>
+      <if test="location != null">
+        and location=#{location,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null">
+        and `name`=#{name,jdbcType=VARCHAR}
+      </if>
+      <if test="telephone != null">
+        and telephone=#{telephone,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -28,11 +65,11 @@
   </delete>
   <insert id="insert" parameterType="com.kcc.buyer.domain.CompanyInfo">
     insert into company_info (id, cellphone, order_id, 
-      company_type, contacts, email, 
+      `type`, contacts, email,
       fax, location, name, 
       telephone)
     values (#{id,jdbcType=INTEGER}, #{cellphone,jdbcType=VARCHAR}, #{orderId,jdbcType=INTEGER}, 
-      #{companyType,jdbcType=INTEGER}, #{contacts,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{contacts,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
       #{fax,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{telephone,jdbcType=VARCHAR})
   </insert>
@@ -48,8 +85,8 @@
       <if test="orderId != null">
         order_id,
       </if>
-      <if test="companyType != null">
-        company_type,
+      <if test="type != null">
+        `type`,
       </if>
       <if test="contacts != null">
         contacts,
@@ -80,8 +117,8 @@
       <if test="orderId != null">
         #{orderId,jdbcType=INTEGER},
       </if>
-      <if test="companyType != null">
-        #{companyType,jdbcType=INTEGER},
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
       </if>
       <if test="contacts != null">
         #{contacts,jdbcType=VARCHAR},
@@ -112,8 +149,8 @@
       <if test="orderId != null">
         order_id = #{orderId,jdbcType=INTEGER},
       </if>
-      <if test="companyType != null">
-        company_type = #{companyType,jdbcType=INTEGER},
+      <if test="type != null">
+        `type` = #{type,jdbcType=INTEGER},
       </if>
       <if test="contacts != null">
         contacts = #{contacts,jdbcType=VARCHAR},
@@ -140,7 +177,7 @@
     update company_info
     set cellphone = #{cellphone,jdbcType=VARCHAR},
       order_id = #{orderId,jdbcType=INTEGER},
-      company_type = #{companyType,jdbcType=INTEGER},
+      `type` = #{type,jdbcType=INTEGER},
       contacts = #{contacts,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
       fax = #{fax,jdbcType=VARCHAR},

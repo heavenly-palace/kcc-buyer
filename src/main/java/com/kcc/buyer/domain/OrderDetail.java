@@ -24,6 +24,13 @@ public class OrderDetail implements Serializable {
 
     private Double taxRate;
 
+    public OrderDetail() {
+    }
+
+    public OrderDetail(Integer orderId) {
+        this.orderId = orderId;
+    }
+
     public Integer getId() {
         return id;
     }

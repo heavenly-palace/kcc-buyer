@@ -2,6 +2,8 @@ package com.kcc.buyer.mapper;
 
 import com.kcc.buyer.domain.CompanyInfo;
 
+import java.util.List;
+
 public interface CompanyInfoMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,6 @@ public interface CompanyInfoMapper {
     int updateByPrimaryKeySelective(CompanyInfo record);
 
     int updateByPrimaryKey(CompanyInfo record);
+
+    List<CompanyInfo> selectSelective(CompanyInfo companyInfo);
 }
