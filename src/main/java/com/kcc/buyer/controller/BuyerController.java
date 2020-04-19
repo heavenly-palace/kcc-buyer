@@ -69,9 +69,11 @@ public class BuyerController {
                 accountMapper.insertSelective(account);
 
                 List<Product> productList = supplier.getProductList();
-                productList = objectUtil.getProductNo(productList);
-                productList.forEach(product -> product.setCompanyId(supplier.getId()));
-                productMapper.insert(productList);
+                if (!ObjectUtils.isEmpty(productList)){
+                    productList = objectUtil.getProductNo(productList);
+                    productList.forEach(product -> product.setCompanyId(supplier.getId()));
+                    productMapper.insert(productList);
+                }
             }
         } catch (Exception e){
             logger.debug("create supplier failure: " + e.getMessage());
@@ -154,6 +156,15 @@ public class BuyerController {
         return ResponseEntity.ok();
     }
 
+    @DELETE
+    @Path("/company/{companyId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    @Transactional
+    public ResponseEntity deleteCommpany(@PathParam("companyId") Integer companyId){
+        companyMapper.deleteByPrimaryKey(companyId);
+        return ResponseEntity.ok();
+    }
+
     @GET
     @Path("/company/{companyType}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
@@ -226,11 +237,11 @@ public class BuyerController {
     }
 
     @GET
-    @Path("/order/details")
+    @Path("/orders")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional(readOnly = true)
-    public ResponseEntity getOrder(){
-        PageHelper.startPage(1, 10);
+    public ResponseEntity getOrder(@QueryParam("pageNum") Integer pageNum, @QueryParam("pageSize") Integer pageSize){
+        PageHelper.startPage(pageNum, pageSize);
         List<Order> orderList = orderMapper.selectByPrimaryKey(null);
         if(!ObjectUtils.isEmpty(orderList)){
             for (Order order:orderList
