@@ -14,7 +14,7 @@
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `no`, company_id, `describe`, currency, pack, price, tax_rate, `type`, status
+    id, `no`, company_id, `describe`, currency, pack, price, tax_rate, at_price, `type`, status
   </sql>
   <select id="selectBySelective" parameterType="com.kcc.buyer.domain.Product" resultMap="BaseResultMap">
     select
@@ -42,14 +42,14 @@
   <insert id="insert" parameterType="java.util.List">
     insert into product (id, `no`, company_id,
       `describe`, currency, pack,
-      price, tax_rate, `type`,
+      price, tax_rate, at_price, `type`,
       status)
     values
     <foreach collection="collection" item="product" index="index" separator=",">
       (#{product.id,jdbcType=INTEGER}, #{product.no,jdbcType=VARCHAR}, #{product.companyId,jdbcType=INTEGER},
       #{product.describe,jdbcType=VARCHAR}, #{product.currency,jdbcType=VARCHAR}, #{product.pack,jdbcType=VARCHAR},
-      #{product.price,jdbcType=DOUBLE}, #{product.taxRate,jdbcType=DOUBLE}, #{product.type,jdbcType=INTEGER},
-      #{product.status,jdbcType=INTEGER})
+      #{product.price,jdbcType=DOUBLE}, #{product.taxRate,jdbcType=DOUBLE}, #{product.atPrice,jdbcType=DOUBLE},
+       #{product.type,jdbcType=INTEGER}, #{product.status,jdbcType=INTEGER})
     </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.kcc.buyer.domain.Product">
@@ -78,6 +78,9 @@
       </if>
       <if test="taxRate != null">
         tax_rate,
+      </if>
+      <if test="atPrice != null">
+        at_price,
       </if>
       <if test="type != null">
         `type`,
@@ -111,6 +114,9 @@
       <if test="taxRate != null">
         #{taxRate,jdbcType=DOUBLE},
       </if>
+      <if test="atPrice != null">
+        #{atPrice,jdbcType=DOUBLE},
+      </if>
       <if test="type != null">
         #{type,jdbcType=INTEGER},
       </if>
@@ -143,6 +149,9 @@
       <if test="taxRate != null">
         tax_rate = #{taxRate,jdbcType=DOUBLE},
       </if>
+      <if test="atPrice != null">
+        at_price = #{atPrice,jdbcType=DOUBLE},
+      </if>
       <if test="type != null">
         `type` = #{type,jdbcType=INTEGER},
       </if>
@@ -161,6 +170,7 @@
       pack = #{pack,jdbcType=VARCHAR},
       price = #{price,jdbcType=DOUBLE},
       tax_rate = #{taxRate,jdbcType=DOUBLE},
+      at_price = #{atPrice,jdbcType=DOUBLE},
       `type` = #{type,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}

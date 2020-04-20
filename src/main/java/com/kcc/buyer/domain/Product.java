@@ -1,6 +1,11 @@
 package com.kcc.buyer.domain;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
+
+    private static final long serialVersionUID = -3979081763631666793L;
+
     private Integer id;
 
     private String no;
@@ -16,6 +21,8 @@ public class Product {
     private Double price;
 
     private Double taxRate;
+
+    private Double atPrice;
 
     private Integer type;
 
@@ -90,6 +97,14 @@ public class Product {
 
     public void setTaxRate(Double taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public Double getAtPrice() {
+        return atPrice;
+    }
+
+    public void setAtPrice(Double atPrice) {
+        this.atPrice = atPrice;
     }
 
     public Integer getType() {

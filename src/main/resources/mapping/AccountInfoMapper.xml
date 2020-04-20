@@ -19,6 +19,31 @@
     from account_info
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectSelective" parameterType="com.kcc.buyer.domain.AccountInfo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from account_info
+    <trim prefix="where" prefixOverrides="and">
+      <if test="id != null">
+        and id = #{id,jdbcType=INTEGER},
+      </if>
+      <if test="companyInfoId != null">
+        and companyInfoId = #{companyInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="bankAccount != null">
+        and bankAccount = #{bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        and bankName = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        and location = #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        and telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from account_info
     where id = #{id,jdbcType=INTEGER}

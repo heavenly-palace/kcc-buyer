@@ -1,8 +1,12 @@
 package com.kcc.buyer.domain;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Company {
+public class Company implements Serializable {
+
+    private static final long serialVersionUID = -6453472576791785294L;
+
     private Integer id;
 
     private String no;

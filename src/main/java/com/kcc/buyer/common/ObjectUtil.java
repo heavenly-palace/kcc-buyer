@@ -55,13 +55,15 @@ public class ObjectUtil {
         String lastNo = productMapper.selectCurrentLastNo(date);
         for (Product product:productList
         ) {
-            if(lastNo == null){
-                lastNo = date + "001";
-            }else {
-                long intNumber = Long.parseLong(lastNo);
-                lastNo = String.valueOf(++intNumber);
+            if(product.getId() == null){
+                if(lastNo == null){
+                    lastNo = date + "001";
+                }else {
+                    long intNumber = Long.parseLong(lastNo);
+                    lastNo = String.valueOf(++intNumber);
+                }
+                product.setNo(lastNo);
             }
-            product.setNo(lastNo);
         }
         return productList;
     }

@@ -14,4 +14,6 @@ public interface AccountInfoMapper {
     int updateByPrimaryKeySelective(AccountInfo record);
 
     int updateByPrimaryKey(AccountInfo record);
+
+    AccountInfo selectSelective(AccountInfo accountInfo);
 }

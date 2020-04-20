@@ -99,6 +99,7 @@ public class BuyerController {
 
                 List<Product> productList = supplier.getProductList();
                 if(!ObjectUtils.isEmpty(productList)){
+                    productList = objectUtil.getProductNo(productList);
                     for (Product product:productList
                     ) {
                         if(product.getId() == null) productMapper.insertSelective(product);
@@ -142,12 +143,14 @@ public class BuyerController {
     @Transactional
     public ResponseEntity updateBuyer(String request){
         try {
-            Company supplier = gson.fromJson(request,new TypeToken<Company>() {}.getType());
-            if(!ObjectUtils.isEmpty(supplier)){
-                companyMapper.updateByPrimaryKeySelective(supplier);
+            Company buyer = gson.fromJson(request,new TypeToken<Company>() {}.getType());
+            if(!ObjectUtils.isEmpty(buyer)){
+                companyMapper.updateByPrimaryKeySelective(buyer);
 
-                Account account = supplier.getAccount();
-                accountMapper.updateByPrimaryKeySelective(account);
+                Account account = buyer.getAccount();
+                if(account != null){
+                    accountMapper.updateByPrimaryKeySelective(account);
+                }
             }
         } catch (Exception e){
             logger.debug("create buyer failure: " + e.getMessage());
@@ -165,11 +168,17 @@ public class BuyerController {
         return ResponseEntity.ok();
     }
 
+    /**
+     * Query all suppliers or buyers
+     *
+     * @param companyType Distinguish the type of company by type  ps:1/suppliers   2/buyers
+     * @return companies
+     */
     @GET
-    @Path("/company/{companyType}")
+    @Path("/companies/{type}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional(readOnly = true)
-    public ResponseEntity getCompanyAll(@PathParam("companyType") String companyType){
+    public ResponseEntity getCompanyAll(@PathParam("type") String companyType){
         List<Company> companies = null;
         if(companyType.equals("suppliers")){
             companies = companyMapper.selectSelective(new Company(1));
@@ -183,16 +192,20 @@ public class BuyerController {
     }
 
     @GET
-    @Path("/company/supplier/{companyId}")
+    @Path("/company/{companyId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional(readOnly = true)
     public ResponseEntity getCompany(@PathParam("companyId") Integer companyId){
         Company company = companyMapper.selectByPrimaryKey(companyId);
         if(company != null){
             Account account = accountMapper.selectSelective(new Account(companyId));
-            List<Product> productList = productMapper.selectBySelective(new Product(companyId));
             company.setAccount(account);
-            company.setProductList(productList);
+
+            if(company.getType().equals(1)){
+                List<Product> productList = productMapper.selectBySelective(new Product(companyId));
+                company.setProductList(productList);
+            }
+
         }
         return new ResponseEntity(200, "success", company);
     }
@@ -255,7 +268,28 @@ public class BuyerController {
             }
         }
         return new ResponseEntity(200,"success",orderList);
+    }
 
+    @GET
+    @Path("/order/{orderId}}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    @Transactional(readOnly = true)
+    public ResponseEntity getOrderDetails(@PathParam("orderId") Integer orderId){
+        List<Order> orderList = orderMapper.selectByPrimaryKey(orderId);
+        if(!ObjectUtils.isEmpty(orderList)){
+            Order order = orderList.get(0);
+            List<CompanyInfo> companyInfoList = companyInfoMapper.selectSelective(new CompanyInfo(orderId));
+            order.setCompanyInfoList(companyInfoList);
+
+            companyInfoList.forEach(companyInfo -> {
+                AccountInfo accountInfo = accountInfoMapper.selectByPrimaryKey(companyInfo.getId());
+                companyInfo.setAccountInfo(accountInfo);
+            });
+
+            List<OrderDetail> orderDetails = orderDetailMapper.selectSelective(new OrderDetail(orderId));
+            order.setOrderDetailList(orderDetails);
+        }
+        return new ResponseEntity(200,"success",orderList);
     }
 
 }

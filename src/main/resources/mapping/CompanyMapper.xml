@@ -87,10 +87,10 @@
         id,
       </if>
       <if test="no != null">
-        no,
+        `no`,
       </if>
       <if test="name != null">
-        name,
+        `name`,
       </if>
       <if test="cellphone != null">
         cellphone,
@@ -111,7 +111,7 @@
         telephone,
       </if>
       <if test="type != null">
-        type,
+        `type`,
       </if>
       <if test="comment != null">
         comment,
