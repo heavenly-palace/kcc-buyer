@@ -3,7 +3,7 @@ package com.kcc.buyer.controller;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.kcc.buyer.common.ObjectUtil;
+import com.kcc.buyer.util.ObjectUtil;
 import com.kcc.buyer.common.ResponseEntity;
 import com.kcc.buyer.domain.*;
 import com.kcc.buyer.mapper.*;

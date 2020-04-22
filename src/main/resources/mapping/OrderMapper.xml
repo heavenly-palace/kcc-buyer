@@ -4,10 +4,14 @@
   <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.Order">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="order_uuid" jdbcType="VARCHAR" property="orderUuid" />
+    <result column="money" jdbcType="DOUBLE" property="money" />
+    <result column="upper_money" jdbcType="VARCHAR" property="upperMoney" />
+    <result column="at_money" jdbcType="DOUBLE" property="atMoney" />
+    <result column="upper_at_money" jdbcType="VARCHAR" property="upperAtMoney" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_uuid, comment
+    id, order_uuid, money, upper_money, at_money, upper_at_money, comment
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -23,9 +27,10 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.kcc.buyer.domain.Order">
-    insert into `order` (id, order_uuid, comment
+    insert into `order` (id, order_uuid, money, upper_money, at_money, at_upper_money, comment
       )
-    values (#{id,jdbcType=INTEGER}, #{orderUuid,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}
+    values (#{id,jdbcType=INTEGER}, #{orderUuid,jdbcType=VARCHAR}, #{money,jdbcType=DOUBLE},
+    #{upperMoney,jdbcType=VARCHAR}, #{atMoney,jdbcType=DOUBLE}, #{upperAtMoney,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.kcc.buyer.domain.Order" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -36,6 +41,18 @@
       </if>
       <if test="orderUuid != null">
         order_uuid,
+      </if>
+      <if test="money != null">
+        money,
+      </if>
+      <if test="upperMoney != null">
+        upper_money,
+      </if>
+      <if test="atMoney != null">
+        at_money,
+      </if>
+      <if test="upperAtMoney != null">
+        upper_at_money,
       </if>
       <if test="comment != null">
         comment,
@@ -48,6 +65,18 @@
       <if test="orderUuid != null">
         #{orderUuid,jdbcType=VARCHAR},
       </if>
+      <if test="money != null">
+        #{money,jdbcType=DOUBLE},
+      </if>
+      <if test="upperMoney != null">
+        #{upperMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="atMoney != null">
+        #{atMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="upperAtMoney != null">
+        #{upperAtMoney,jdbcType=VARCHAR},
+      </if>
       <if test="comment != null">
         #{comment,jdbcType=VARCHAR},
       </if>
@@ -56,8 +85,17 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.kcc.buyer.domain.Order">
     update `order`
     <set>
-      <if test="orderUuid != null">
-        order_uuid = #{orderUuid,jdbcType=VARCHAR},
+      <if test="money != null">
+        money = #{orderUuid,jdbcType=DOUBLE},
+      </if>
+      <if test="upperMoney != null">
+        upper_money = #{upperMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="atMoney != null">
+        at_money = #{atMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="upperAtMoney != null">
+        upper_at_money = #{upperAtMoney,jdbcType=VARCHAR},
       </if>
       <if test="comment != null">
         comment = #{comment,jdbcType=VARCHAR},
@@ -68,7 +106,11 @@
   <update id="updateByPrimaryKey" parameterType="com.kcc.buyer.domain.Order">
     update `order`
     set order_uuid = #{orderUuid,jdbcType=VARCHAR},
-      comment = #{comment,jdbcType=VARCHAR}
+        money = #{money,jdbcType=DOUBLE},
+        upper_money = #{upperMoney,jdbcType=VARCHAR},
+        at_money = #{atMoney,jdbcType=DOUBLE},
+        upper_at_money = #{upperAtMoney,jdbcType=VARCHAR},
+        comment = #{comment,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

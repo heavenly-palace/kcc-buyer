@@ -1,4 +1,4 @@
-package com.kcc.buyer.common;
+package com.kcc.buyer.util;
 
 import com.kcc.buyer.domain.Company;
 import com.kcc.buyer.domain.Product;

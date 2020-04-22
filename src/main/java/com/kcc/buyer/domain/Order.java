@@ -11,6 +11,14 @@ public class Order implements Serializable {
 
     private String orderUuid;
 
+    private Double money;
+
+    private String upperMoney;
+
+    private Double atMoney;
+
+    private String upperAtMoney;
+
     private String comment;
 
     private List<CompanyInfo> companyInfoList;
@@ -31,6 +39,38 @@ public class Order implements Serializable {
 
     public void setOrderUuid(String orderUuid) {
         this.orderUuid = orderUuid == null ? null : orderUuid.trim();
+    }
+
+    public Double getMoney() {
+        return money;
+    }
+
+    public void setMoney(Double money) {
+        this.money = money;
+    }
+
+    public String getUpperMoney() {
+        return upperMoney;
+    }
+
+    public void setUpperMoney(String upperMoney) {
+        this.upperMoney = upperMoney;
+    }
+
+    public Double getAtMoney() {
+        return atMoney;
+    }
+
+    public void setAtMoney(Double atMoney) {
+        this.atMoney = atMoney;
+    }
+
+    public String getUpperAtMoney() {
+        return upperAtMoney;
+    }
+
+    public void setUpperAtMoney(String upperAtMoney) {
+        this.upperAtMoney = upperAtMoney;
     }
 
     public String getComment() {
@@ -62,6 +102,10 @@ public class Order implements Serializable {
         return "Order{" +
                 "id=" + id +
                 ", orderUuid='" + orderUuid + '\'' +
+                ", money=" + money +
+                ", upperMoney='" + upperMoney + '\'' +
+                ", atMoney=" + atMoney +
+                ", upperAtMoney='" + upperAtMoney + '\'' +
                 ", comment='" + comment + '\'' +
                 ", companyInfoList=" + companyInfoList +
                 ", orderDetailList=" + orderDetailList +

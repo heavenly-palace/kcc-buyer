@@ -18,6 +18,12 @@ public class OrderDetail implements Serializable {
 
     private Double price;
 
+    private Double aTPrice;
+
+    private Double totalPrice;
+
+    private Double aTTotalPrice;
+
     private Integer quantity;
 
     private String supplyDate;
@@ -79,6 +85,30 @@ public class OrderDetail implements Serializable {
         this.price = price;
     }
 
+    public Double getaTPrice() {
+        return aTPrice;
+    }
+
+    public void setaTPrice(Double aTPrice) {
+        this.aTPrice = aTPrice;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Double getaTTotalPrice() {
+        return aTTotalPrice;
+    }
+
+    public void setaTTotalPrice(Double aTTotalPrice) {
+        this.aTTotalPrice = aTTotalPrice;
+    }
+
     public Integer getQuantity() {
         return quantity;
     }
@@ -112,6 +142,9 @@ public class OrderDetail implements Serializable {
                 ", describe='" + describe + '\'' +
                 ", pack='" + pack + '\'' +
                 ", price=" + price +
+                ", aTPrice=" + aTPrice +
+                ", totalPrice=" + totalPrice +
+                ", aTTotalPrice=" + aTTotalPrice +
                 ", quantity=" + quantity +
                 ", supplyDate='" + supplyDate + '\'' +
                 ", taxRate=" + taxRate +
