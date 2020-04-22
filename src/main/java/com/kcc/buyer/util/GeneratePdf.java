@@ -1,20 +1,14 @@
 package com.kcc.buyer.util;
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import com.kcc.buyer.domain.AccountInfo;
 import com.kcc.buyer.domain.CompanyInfo;
 import com.kcc.buyer.domain.Order;
 import com.kcc.buyer.domain.OrderDetail;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.List;
 
 public class GeneratePdf {
@@ -35,10 +29,10 @@ public class GeneratePdf {
         try {
             bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
             titlefont = new Font(bfChinese, 16, Font.BOLD);
-            headfont = new Font(bfChinese, 12, Font.BOLD);
-            keyfont = new Font(bfChinese, 10, Font.BOLD);
+            headfont = new Font(bfChinese, 12, Font.NORMAL);
+            keyfont = new Font(bfChinese, 10, Font.NORMAL);
             textfont = new Font(bfChinese, 10, Font.NORMAL);
-            orderId = new Font(bfChinese, 8, Font.BOLD);
+            orderId = new Font(bfChinese, 8, Font.NORMAL);
         } catch (DocumentException | IOException e) {
             e.printStackTrace();
         }
@@ -46,7 +40,7 @@ public class GeneratePdf {
 
 
 
-    public void generatePDF(Order order){
+    public ByteArrayOutputStream generatePDF(Order order){
 
         Document document = new Document(); // 默认页面大小是A4
         document.addTitle("k.c communication");
@@ -55,13 +49,13 @@ public class GeneratePdf {
         document.addKeywords("kcc");
         document.addCreator("sulei");
 
-        String filePath = "C://Users//w10ws//Documents//generatepdf//"+order.getOrderUuid()+".pdf";
+        ByteArrayOutputStream baos = null;
         try {
-            FileOutputStream outputStream = new FileOutputStream(filePath);
-            PdfWriter writer = PdfWriter.getInstance(document,outputStream);
+            baos = new ByteArrayOutputStream();
+            PdfWriter writer = PdfWriter.getInstance(document, baos);
             writer.setPageEvent(new Watermark());
             writer.setPageEvent(new MyHeaderFooter());
-        } catch (DocumentException | FileNotFoundException e) {
+        } catch (DocumentException e) {
             e.printStackTrace();
         }
 
@@ -137,6 +131,8 @@ public class GeneratePdf {
         }
 
         document.close();
+
+        return baos;
     }
 
     /**

@@ -23,41 +23,14 @@
     <include refid="Base_Column_List" />
     from order_detail
     <trim prefix="where" prefixOverrides="and">
-      <if test="id != null">
-        and id=#{id,jdbcType=INTEGER}
-      </if>
       <if test="orderId != null">
         and order_id=#{orderId,jdbcType=VARCHAR}
-      </if>
-      <if test="currency != null">
-        and currency=#{currency,jdbcType=VARCHAR}
       </if>
       <if test="describe != null">
         and `describe`=#{describe,jdbcType=VARCHAR}
       </if>
-      <if test="pack != null">
-        and pack#{pack,jdbcType=VARCHAR}
-      </if>
-      <if test="price != null">
-        and price=#{price,jdbcType=DOUBLE}
-      </if>
-      <if test="aTPrice != null">
-        and at_price=#{aTPrice,jdbcType=DOUBLE}
-      </if>
-      <if test="totalPrice != null">
-        and total_price=#{totalPrice,jdbcType=DOUBLE}
-      </if>
-      <if test="aTTotalPrice != null">
-        and at_total_price=#{aTTotalPrice,jdbcType=DOUBLE}
-      </if>
-      <if test="quantity != null">
-        and quantity=#{quantity,jdbcType=INTEGER}
-      </if>
       <if test="supplyDate != null">
         and supply_date=#{supplyDate,jdbcType=VARCHAR}
-      </if>
-      <if test="taxRate != null">
-        and tax_rate=#{taxRate,jdbcType=DOUBLE}
       </if>
     </trim>
   </select>

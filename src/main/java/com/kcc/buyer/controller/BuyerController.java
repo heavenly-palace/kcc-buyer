@@ -13,12 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+
+import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.UUID;
 
-//@Singleton
+@Singleton
 @Component
 @Path("/api")
 public class BuyerController {
@@ -255,7 +257,7 @@ public class BuyerController {
     @Transactional(readOnly = true)
     public ResponseEntity getOrder(@QueryParam("pageNum") Integer pageNum, @QueryParam("pageSize") Integer pageSize){
         PageHelper.startPage(pageNum, pageSize);
-        List<Order> orderList = orderMapper.selectByPrimaryKey(null);
+        List<Order> orderList = orderMapper.selectOrderAll();
         if(!ObjectUtils.isEmpty(orderList)){
             for (Order order:orderList
                  ) {
@@ -275,9 +277,8 @@ public class BuyerController {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional(readOnly = true)
     public ResponseEntity getOrderDetails(@PathParam("orderId") Integer orderId){
-        List<Order> orderList = orderMapper.selectByPrimaryKey(orderId);
-        if(!ObjectUtils.isEmpty(orderList)){
-            Order order = orderList.get(0);
+        Order order = orderMapper.selectByPrimaryKey(orderId);
+        if(!ObjectUtils.isEmpty(order)){
             List<CompanyInfo> companyInfoList = companyInfoMapper.selectSelective(new CompanyInfo(orderId));
             order.setCompanyInfoList(companyInfoList);
 
@@ -289,7 +290,7 @@ public class BuyerController {
             List<OrderDetail> orderDetails = orderDetailMapper.selectSelective(new OrderDetail(orderId));
             order.setOrderDetailList(orderDetails);
         }
-        return new ResponseEntity(200,"success",orderList);
+        return new ResponseEntity(200,"success",order);
     }
 
 }
