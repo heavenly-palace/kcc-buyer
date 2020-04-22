@@ -3,6 +3,7 @@ package com.kcc.buyer.controller;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.kcc.buyer.util.GeneratePdf;
 import com.kcc.buyer.util.ObjectUtil;
 import com.kcc.buyer.common.ResponseEntity;
 import com.kcc.buyer.domain.*;
@@ -15,8 +16,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import javax.inject.Singleton;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -291,6 +298,35 @@ public class BuyerController {
             order.setOrderDetailList(orderDetails);
         }
         return new ResponseEntity(200,"success",order);
+    }
+
+    @GET
+    @Path("/generatepdf/{orderId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity generatePdf(@Context HttpServletResponse response, @PathParam("orderId") Integer orderId) throws IOException {
+        Order order = orderMapper.selectByPrimaryKey(orderId);
+        if(order != null){
+            List<CompanyInfo> companyInfoList = companyInfoMapper.selectSelective(new CompanyInfo(orderId));
+            order.setCompanyInfoList(companyInfoList);
+            companyInfoList.forEach(companyInfo -> {
+                AccountInfo accountInfo = accountInfoMapper.selectSelective(new AccountInfo(companyInfo.getId()));
+                companyInfo.setAccountInfo(accountInfo);
+            });
+            List<OrderDetail> orderDetails = orderDetailMapper.selectSelective(new OrderDetail(orderId));
+            order.setOrderDetailList(orderDetails);
+        }
+        if(!ObjectUtils.isEmpty(order)){
+            GeneratePdf generatePdf = new GeneratePdf();
+            ByteArrayOutputStream byteArrayOutputStream = generatePdf.generatePDF(order);
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition","inline; filename=" + "kcc-order.pdf");
+            response.setContentLengthLong(byteArrayOutputStream.size());
+            OutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
+            outputStream.write(byteArrayOutputStream.toByteArray());
+            outputStream.flush();
+            outputStream.close();
+        }
+        return ResponseEntity.ok();
     }
 
 }

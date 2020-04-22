@@ -1,7 +1,6 @@
 package com.kcc.buyer.config;
 
 import com.kcc.buyer.controller.BuyerController;
-import com.kcc.buyer.controller.GeneratePdfController;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +16,5 @@ public class JerseyConfig extends ResourceConfig {
     public JerseyConfig() {
         register(BuyerController.class);
         register(MultiPartFeature.class);
-        register(GeneratePdfController.class);
     }
 }
