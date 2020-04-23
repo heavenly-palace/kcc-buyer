@@ -24,7 +24,7 @@
     from product
     where company_id = #{companyId}
   </select>
-  <select id="selectCurrentLastNo" parameterType="java.util.Map" resultType="java.lang.String">
+  <select id="selectCurrentLastNo" parameterType="java.lang.String" resultType="java.lang.String">
     select `no` from product where  `no` like #{date}"%" order by `no` desc limit 1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

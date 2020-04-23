@@ -18,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.UUID;
 
 
 @Service
@@ -67,8 +66,7 @@ public class BuyerService {
     public void createSupplier(Company supplier){
         try {
             if(!ObjectUtils.isEmpty(supplier)){
-                String currentNo = objectUtil.getCompanyNo(supplier);
-                supplier.setNo(currentNo);
+                supplier = objectUtil.getCompanyNo(supplier);
                 companyMapper.insertSelective(supplier);
 
                 Account account = supplier.getAccount();
@@ -85,8 +83,7 @@ public class BuyerService {
     public void createBuyer(Company buyer){
         try {
             if(!ObjectUtils.isEmpty(buyer)){
-                String currentNo = objectUtil.getCompanyNo(buyer);
-                buyer.setNo(currentNo);
+                buyer = objectUtil.getCompanyNo(buyer);
                 companyMapper.insertSelective(buyer);
 
                 Account account = buyer.getAccount();
@@ -102,12 +99,12 @@ public class BuyerService {
     @Transactional
     public void updateBuyer(Company buyer){
         try {
-            if(!ObjectUtils.isEmpty(buyer)){
-                companyMapper.updateByPrimaryKeySelective(buyer);
+            if(!ObjectUtils.isEmpty(buyer))
+                if(buyer.getId() != null){
+                    companyMapper.updateByPrimaryKeySelective(buyer);
                 Account account = buyer.getAccount();
-                if(account != null && account.getId() != null){
+                if(account != null && account.getId() != null)
                     accountMapper.updateByPrimaryKeySelective(account);
-                }
             }
         } catch (Exception e){
             logger.debug("create buyer failure: " + e.getMessage());
@@ -124,14 +121,6 @@ public class BuyerService {
                 Account account = supplier.getAccount();
                 if(account != null && account.getId() != null)
                     accountMapper.updateByPrimaryKeySelective(account);
-                List<Product> productList = supplier.getProductList();
-                if(!ObjectUtils.isEmpty(productList)){
-                    productList = objectUtil.getProductNo(productList);
-                    productList.forEach( product -> {
-                        if(product.getId() == null) productMapper.insertSelective(product);
-                        else productMapper.updateByPrimaryKeySelective(product);
-                    });
-                }
             }
         } catch (Exception e){
             logger.debug("update supplier failure, message: " + e.getMessage());
@@ -154,16 +143,15 @@ public class BuyerService {
         productMapper.insertProductBatch(productList);
     }
 
+    @Transactional
+    public void deleteCompany(Integer companyId){
+        companyMapper.deleteByPrimaryKey(companyId);
+    }
+
     @Transactional(readOnly = true)
     public ResponseEntity getProducts(Integer supplierId){
         List<Product> productList = productMapper.selectBySupplier(supplierId);
         return ResponseEntity.ok(productList);
-    }
-
-
-    @Transactional
-    public void deleteCompany(Integer companyId){
-        companyMapper.deleteByPrimaryKey(companyId);
     }
 
     @Transactional(readOnly = true)
@@ -189,9 +177,8 @@ public class BuyerService {
     }
 
     @Transactional
-    public ResponseEntity createOrder(Order order){
-        String orderUuid = UUID.randomUUID().toString();
-        order.setOrderUuid(orderUuid);
+    public ResponseEntity createOrder(Order orderSource){
+        Order order = objectUtil.getOrderNo(orderSource);
         orderMapper.insertSelective(order);
 
         List<CompanyInfo> companyInfoList = order.getCompanyInfoList();

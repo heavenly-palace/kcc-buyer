@@ -14,6 +14,9 @@
   <sql id="Base_Column_List">
     id, order_uuid, money, upper_money, at_money, upper_at_money, comment, status
   </sql>
+  <select id="selectCurrentLastNo" parameterType="java.lang.String" resultType="java.lang.String">
+    select `order_uuid` from `order` where  `order_uuid` like #{date}"%" order by `order_uuid` desc limit 1
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

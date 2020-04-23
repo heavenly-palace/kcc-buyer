@@ -136,6 +136,7 @@ public class BuyerController {
         return ResponseEntity.ok();
     }
 
+    //create order
     @POST
     @Path("/order")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
@@ -161,6 +162,7 @@ public class BuyerController {
         return buyerService.getOrderDetails(orderId);
     }
 
+    //PDF file generate
     @GET
     @Path("/generatepdf/{orderId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
