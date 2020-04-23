@@ -3,17 +3,10 @@ package com.kcc.buyer.mapper;
 import com.kcc.buyer.domain.Account;
 
 public interface AccountMapper {
-    int deleteByPrimaryKey(Integer id);
-
-    int insert(Account record);
 
     int insertSelective(Account record);
 
-    Account selectByPrimaryKey(Integer id);
-
     int updateByPrimaryKeySelective(Account record);
 
-    int updateByPrimaryKey(Account record);
-
-    Account selectSelective(Account account);
+    Account selectBySupplierId(Integer supplierId);
 }

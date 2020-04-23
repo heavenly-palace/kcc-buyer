@@ -46,5 +46,6 @@ logging:
     com:
       kcc:
         buyer:
+          service: debug
           mapper: debug
           controller: debug

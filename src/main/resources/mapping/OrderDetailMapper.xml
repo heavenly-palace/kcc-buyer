@@ -34,17 +34,13 @@
       </if>
     </trim>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+  <select id="selectByOrderId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
     from order_detail
-    where id = #{id,jdbcType=INTEGER}
+    where order_id=#{orderId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from order_detail
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="java.util.List">
+  <insert id="insertBatch" parameterType="java.util.List">
     insert into order_detail (id, order_id, currency, 
       `describe`, pack, price, at_price, total_price, at_total_price,
       quantity, supply_date, tax_rate )
@@ -57,137 +53,4 @@
       )
     </foreach>
   </insert>
-  <insert id="insertSelective" parameterType="com.kcc.buyer.domain.OrderDetail">
-    insert into order_detail
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="orderId != null">
-        order_id,
-      </if>
-      <if test="currency != null">
-        currency,
-      </if>
-      <if test="describe != null">
-        `describe`,
-      </if>
-      <if test="pack != null">
-        pack,
-      </if>
-      <if test="price != null">
-        price,
-      </if>
-      <if test="aTPrice != null">
-        at_price,
-      </if>
-      <if test="totalPrice != null">
-        total_price,
-      </if>
-      <if test="aTTotalPrice != null">
-        at_total_price,
-      </if>
-      <if test="quantity != null">
-        quantity,
-      </if>
-      <if test="supplyDate != null">
-        supply_date,
-      </if>
-      <if test="taxRate != null">
-        tax_rate,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="orderId != null">
-        #{orderId,jdbcType=INTEGER},
-      </if>
-      <if test="currency != null">
-        #{currency,jdbcType=VARCHAR},
-      </if>
-      <if test="describe != null">
-        #{describe,jdbcType=VARCHAR},
-      </if>
-      <if test="pack != null">
-        #{pack,jdbcType=DOUBLE},
-      </if>
-      <if test="aTPrice != null">
-        #{aTPrice,jdbcType=DOUBLE},
-      </if>
-      <if test="pack != null">
-        #{pack,jdbcType=VARCHAR},
-      </if>
-      <if test="totalPrice != null">
-        #{totalPrice,jdbcType=DOUBLE},
-      </if>
-      <if test="aTTotalPrice != null">
-        #{aTTotalPrice,jdbcType=DOUBLE},
-      </if>
-      <if test="quantity != null">
-        #{quantity,jdbcType=INTEGER},
-      </if>
-      <if test="supplyDate != null">
-        #{supplyDate,jdbcType=VARCHAR},
-      </if>
-      <if test="taxRate != null">
-        #{taxRate,jdbcType=DOUBLE},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.kcc.buyer.domain.OrderDetail">
-    update order_detail
-    <set>
-      <if test="orderId != null">
-        order_id = #{orderId,jdbcType=INTEGER},
-      </if>
-      <if test="currency != null">
-        currency = #{currency,jdbcType=VARCHAR},
-      </if>
-      <if test="describe != null">
-        `describe` = #{describe,jdbcType=VARCHAR},
-      </if>
-      <if test="pack != null">
-        pack = #{pack,jdbcType=VARCHAR},
-      </if>
-      <if test="price != null">
-        price = #{price,jdbcType=DOUBLE},
-      </if>
-      <if test="aTPrice != null">
-        at_price = #{aTPrice,jdbcType=DOUBLE},
-      </if>
-      <if test="totalPrice != null">
-        total_price = #{totalPrice,jdbcType=DOUBLE},
-      </if>
-      <if test="aTTotalPrice != null">
-        at_total_price = #{aTTotalPrice,jdbcType=DOUBLE},
-      </if>
-      <if test="quantity != null">
-        quantity = #{quantity,jdbcType=INTEGER},
-      </if>
-      <if test="supplyDate != null">
-        supply_date = #{supplyDate,jdbcType=VARCHAR},
-      </if>
-      <if test="taxRate != null">
-        tax_rate = #{taxRate,jdbcType=DOUBLE},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.kcc.buyer.domain.OrderDetail">
-    update order_detail
-    set order_id = #{orderId,jdbcType=INTEGER},
-      currency = #{currency,jdbcType=VARCHAR},
-      `describe` = #{describe,jdbcType=VARCHAR},
-      pack = #{pack,jdbcType=VARCHAR},
-      price = #{price,jdbcType=VARCHAR},
-      at_price = #{aTPrice,jdbcType=VARCHAR},
-      total_price = #{totalPrice,jdbcType=DOUBLE},
-      at_total_price = #{aTTotalPrice,jdbcType=DOUBLE},
-      quantity = #{quantity,jdbcType=INTEGER},
-      supply_date = #{supplyDate,jdbcType=VARCHAR},
-      tax_rate = #{taxRate,jdbcType=DOUBLE}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
 </mapper>

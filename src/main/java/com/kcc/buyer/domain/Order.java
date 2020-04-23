@@ -21,6 +21,8 @@ public class Order implements Serializable {
 
     private String comment;
 
+    private Integer status;
+
     private List<CompanyInfo> companyInfoList;
 
     private List<OrderDetail> orderDetailList;
@@ -79,6 +81,14 @@ public class Order implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment == null ? null : comment.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public List<CompanyInfo> getCompanyInfoList() {

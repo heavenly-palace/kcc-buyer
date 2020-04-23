@@ -1,5 +1,7 @@
 package com.kcc.buyer.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -31,6 +33,7 @@ public class Company implements Serializable {
 
     private Account account;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Product> productList;
 
     public Company() {

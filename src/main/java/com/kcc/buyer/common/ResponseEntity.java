@@ -62,6 +62,13 @@ public class ResponseEntity {
                 BaseStatus.SUCCESS.getMessage());
     }
 
+    public static ResponseEntity ok(Object data) {
+        return new ResponseEntity(
+                BaseStatus.SUCCESS.getCode(),
+                BaseStatus.SUCCESS.getMessage(),
+                data);
+    }
+
     public static ResponseEntity jsonError() {
         return new ResponseEntity(
                 BaseStatus.ISNULL.getCode(),

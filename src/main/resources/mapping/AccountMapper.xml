@@ -13,52 +13,12 @@
   <sql id="Base_Column_List">
     id, company_id, bank_name, bank_account, location, telephone, tfn
   </sql>
-  <select id="selectSelective" parameterType="com.kcc.buyer.domain.Account" resultMap="BaseResultMap">
+  <select id="selectBySupplierId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from account
-    <trim prefix="where" prefixOverrides="and">
-      <if test="id != null">
-        and id = #{id,jdbcType=INTEGER}
-      </if>
-      <if test="companyId != null">
-        and company_id = #{companyId,jdbcType=INTEGER}
-      </if>
-      <if test="bankName != null">
-        and bank_name = #{bankName,jdbcType=VARCHAR}
-      </if>
-      <if test="bankAccount != null">
-        and bank_account = #{bankAccount,jdbcType=VARCHAR}
-      </if>
-      <if test="location != null">
-        and location = #{location,jdbcType=VARCHAR}
-      </if>
-      <if test="telephone != null">
-        and telephone = #{telephone,jdbcType=VARCHAR}
-      </if>
-      <if test="tfn != null">
-        and tfn = #{tfn,jdbcType=VARCHAR}
-      </if>
-    </trim>
+    where company_id = #{supplierId,jdbcType=INTEGER}
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from account
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from account
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.kcc.buyer.domain.Account">
-    insert into account (id, company_id, bank_name, 
-      bank_account, location, telephone, 
-      tfn)
-    values (#{id,jdbcType=INTEGER}, #{companyId,jdbcType=INTEGER}, #{bankName,jdbcType=VARCHAR}, 
-      #{bankAccount,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
-      #{tfn,jdbcType=VARCHAR})
-  </insert>
   <insert id="insertSelective" parameterType="com.kcc.buyer.domain.Account">
     insert into account
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -130,16 +90,6 @@
         tfn = #{tfn,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.kcc.buyer.domain.Account">
-    update account
-    set company_id = #{companyId,jdbcType=INTEGER},
-      bank_name = #{bankName,jdbcType=VARCHAR},
-      bank_account = #{bankAccount,jdbcType=VARCHAR},
-      location = #{location,jdbcType=VARCHAR},
-      telephone = #{telephone,jdbcType=VARCHAR},
-      tfn = #{tfn,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

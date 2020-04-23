@@ -3,8 +3,8 @@
 <mapper namespace="com.kcc.buyer.mapper.CompanyInfoMapper">
   <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.CompanyInfo">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
     <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="contacts" jdbcType="VARCHAR" property="contacts" />
     <result column="email" jdbcType="VARCHAR" property="email" />
@@ -14,7 +14,7 @@
     <result column="telephone" jdbcType="VARCHAR" property="telephone" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, cellphone, order_id, `type`, contacts, email, fax, location, `name`, telephone
+    id, order_id, cellphone, `type`, contacts, email, fax, location, `name`, telephone
   </sql>
   <select id="selectSelective" parameterType="com.kcc.buyer.domain.CompanyInfo" resultMap="BaseResultMap">
     select
@@ -53,26 +53,12 @@
       </if>
     </trim>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+  <select id="selectByOrderId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
     from company_info
-    where id = #{id,jdbcType=INTEGER}
+    where order_id = #{orderId, jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from company_info
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.kcc.buyer.domain.CompanyInfo">
-    insert into company_info (id, cellphone, order_id, 
-      `type`, contacts, email,
-      fax, location, name, 
-      telephone)
-    values (#{id,jdbcType=INTEGER}, #{cellphone,jdbcType=VARCHAR}, #{orderId,jdbcType=INTEGER}, 
-      #{type,jdbcType=INTEGER}, #{contacts,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
-      #{fax,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{telephone,jdbcType=VARCHAR})
-  </insert>
   <insert id="insertSelective" parameterType="com.kcc.buyer.domain.CompanyInfo" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into company_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -140,50 +126,4 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.kcc.buyer.domain.CompanyInfo">
-    update company_info
-    <set>
-      <if test="cellphone != null">
-        cellphone = #{cellphone,jdbcType=VARCHAR},
-      </if>
-      <if test="orderId != null">
-        order_id = #{orderId,jdbcType=INTEGER},
-      </if>
-      <if test="type != null">
-        `type` = #{type,jdbcType=INTEGER},
-      </if>
-      <if test="contacts != null">
-        contacts = #{contacts,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="fax != null">
-        fax = #{fax,jdbcType=VARCHAR},
-      </if>
-      <if test="location != null">
-        location = #{location,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="telephone != null">
-        telephone = #{telephone,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.kcc.buyer.domain.CompanyInfo">
-    update company_info
-    set cellphone = #{cellphone,jdbcType=VARCHAR},
-      order_id = #{orderId,jdbcType=INTEGER},
-      `type` = #{type,jdbcType=INTEGER},
-      contacts = #{contacts,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      fax = #{fax,jdbcType=VARCHAR},
-      location = #{location,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      telephone = #{telephone,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
 </mapper>

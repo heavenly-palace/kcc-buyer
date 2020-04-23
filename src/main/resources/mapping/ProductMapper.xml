@@ -10,36 +10,28 @@
     <result column="pack" jdbcType="VARCHAR" property="pack" />
     <result column="price" jdbcType="DOUBLE" property="price" />
     <result column="tax_rate" jdbcType="DOUBLE" property="taxRate" />
+    <result column="at_price" jdbcType="DOUBLE" property="atPrice" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
     id, `no`, company_id, `describe`, currency, pack, price, tax_rate, at_price, `type`, status
   </sql>
-  <select id="selectBySelective" parameterType="com.kcc.buyer.domain.Product" resultMap="BaseResultMap">
+
+  <select id="selectBySupplier" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from product
-    <trim prefix="where" prefixOverrides="and">
-      <if test="companyId != null">
-        and company_id = #{companyId}
-      </if>
-    </trim>
+    where company_id = #{companyId}
   </select>
   <select id="selectCurrentLastNo" parameterType="java.util.Map" resultType="java.lang.String">
     select `no` from product where  `no` like #{date}"%" order by `no` desc limit 1
-  </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from product
-    where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from product
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="java.util.List">
+  <insert id="insertProductBatch" parameterType="java.util.List">
     insert into product (id, `no`, company_id,
       `describe`, currency, pack,
       price, tax_rate, at_price, `type`,
@@ -161,18 +153,93 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.kcc.buyer.domain.Product">
+  <update id="updateProductBatch" parameterType="java.util.List">
     update product
-    set `no` = #{no,jdbcType=VARCHAR},
-      company_id = #{companyId,jdbcType=INTEGER},
-      `describe` = #{describe,jdbcType=VARCHAR},
-      currency = #{currency,jdbcType=VARCHAR},
-      pack = #{pack,jdbcType=VARCHAR},
-      price = #{price,jdbcType=DOUBLE},
-      tax_rate = #{taxRate,jdbcType=DOUBLE},
-      at_price = #{atPrice,jdbcType=DOUBLE},
-      `type` = #{type,jdbcType=INTEGER},
-      status = #{status,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="`describe` = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.describe != null">
+            when id=#{item.id} then #{item.describe}
+          </if>
+          <if test="item.describe == null">
+            when id=#{item.id} then product.describe
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="currency = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.currency !=null">
+            when id=#{item.id} then #{item.currency}
+          </if>
+          <if test="item.currency == null">
+            when id=#{item.id} then product.currency
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="pack = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.pack !=null">
+            when id=#{item.id} then #{item.pack}
+          </if>
+          <if test="item.pack == null">
+            when id=#{item.id} then product.pack
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="price = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.price !=null">
+            when id=#{item.id} then #{item.price}
+          </if>
+          <if test="item.price == null">
+            when id=#{item.id} then product.price
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tax_rate = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.taxRate !=null">
+            when id=#{item.id} then #{item.taxRate}
+          </if>
+          <if test="item.taxRate == null">
+            when id=#{item.id} then product.tax_rate
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="at_price = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.atPrice !=null">
+            when id=#{item.id} then #{item.atPrice}
+          </if>
+          <if test="item.atPrice == null">
+            when id=#{item.id} then product.at_price
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="type = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.type !=null">
+            when id=#{item.id} then #{item.type}
+          </if>
+          <if test="item.type == null">
+            when id=#{item.id} then product.type
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="status = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.status != null">
+            when id=#{item.id} then #{item.status}
+          </if>
+          <if test="item.status == null">
+            when id=#{item.id} then product.status
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+      #{item.id,jdbcType=INTEGER}
+    </foreach>
   </update>
 </mapper>

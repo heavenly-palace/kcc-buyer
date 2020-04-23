@@ -28,58 +28,23 @@
     select `no` from company where `type` = #{type} and `no` like #{date}"%" order by `no` desc limit 1
   </select>
 
-  <select id="selectSelective" parameterType="com.kcc.buyer.domain.Company" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
+  <select id="selectBySupplierAll" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
     from company
-    <trim prefix="where" prefixOverrides="and">
-      <if test="id != null">
-        and id = #{id}
-      </if>
-      <if test="no != null">
-        and `no` = #{no}
-      </if>
-      <if test="name != null">
-        and `name` = #{name}
-      </if>
-      <if test="cellphone != null">
-        and cellphone = #{cellphone}
-      </if>
-      <if test="contacts != null">
-        and contacts = #{contacts}
-      </if>
-      <if test="email != null">
-        and email = #{email}
-      </if>
-      <if test="fax != null">
-        and fax = #{fax}
-      </if>
-      <if test="location != null">
-        and location = #{location}
-      </if>
-      <if test="telephone != null">
-        and telephone = #{telephone}
-      </if>
-      <if test="type != null">
-        and `type` = #{type}
-      </if>
-    </trim>
+    where `type` = 1
+  </select>
+
+  <select id="selectByBuyerAll" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from company
+    where `type` = 2
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from company
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.kcc.buyer.domain.Company">
-    insert into company (id, no, name, 
-      cellphone, contacts, email, 
-      fax, location, telephone, 
-      type, comment)
-    values (#{id,jdbcType=INTEGER}, #{no,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{cellphone,jdbcType=VARCHAR}, #{contacts,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
-      #{fax,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER}, #{comment,jdbcType=VARCHAR})
-  </insert>
+
   <insert id="insertSelective" parameterType="com.kcc.buyer.domain.Company" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
     insert into company
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -153,6 +118,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.kcc.buyer.domain.Company">
     update company
     <set>
@@ -187,20 +153,6 @@
         comment = #{comment,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.kcc.buyer.domain.Company">
-    update company
-    set no = #{no,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      cellphone = #{cellphone,jdbcType=VARCHAR},
-      contacts = #{contacts,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      fax = #{fax,jdbcType=VARCHAR},
-      location = #{location,jdbcType=VARCHAR},
-      telephone = #{telephone,jdbcType=VARCHAR},
-      type = #{type,jdbcType=INTEGER},
-      comment = #{comment,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
