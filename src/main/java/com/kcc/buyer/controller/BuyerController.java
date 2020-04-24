@@ -115,7 +115,11 @@ public class BuyerController {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     public ResponseEntity createProductList(String requestJson){
         List<Product> productList = gson.fromJson(requestJson,new TypeToken<List<Product>>() {}.getType());
-        buyerService.createProductList(productList);
+        if(!ObjectUtils.isEmpty(productList)){
+            buyerService.createProductList(productList);
+        }else {
+            return ResponseEntity.jsonError();
+        }
         return ResponseEntity.ok();
     }
 

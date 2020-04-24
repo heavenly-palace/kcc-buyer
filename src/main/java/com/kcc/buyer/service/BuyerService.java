@@ -140,7 +140,8 @@ public class BuyerService {
 
     @Transactional
     public void createProductList(List<Product> productList){
-        productMapper.insertProductBatch(productList);
+        List<Product> products = objectUtil.getProductNo(productList);
+        productMapper.insertProductBatch(products);
     }
 
     @Transactional
