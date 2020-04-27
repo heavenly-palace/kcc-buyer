@@ -1,5 +1,7 @@
 package com.kcc.buyer.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -23,8 +25,10 @@ public class Order implements Serializable {
 
     private Integer status;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<CompanyInfo> companyInfoList;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<OrderDetail> orderDetailList;
 
     public Integer getId() {

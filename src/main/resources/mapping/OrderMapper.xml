@@ -119,15 +119,4 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.kcc.buyer.domain.Order">
-    update `order`
-    set order_uuid = #{orderUuid,jdbcType=VARCHAR},
-        money = #{money,jdbcType=DOUBLE},
-        upper_money = #{upperMoney,jdbcType=VARCHAR},
-        at_money = #{atMoney,jdbcType=DOUBLE},
-        upper_at_money = #{upperAtMoney,jdbcType=VARCHAR},
-        comment = #{comment,jdbcType=VARCHAR},
-        status = #{status,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
 </mapper>

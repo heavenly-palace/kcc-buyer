@@ -17,7 +17,5 @@ public interface OrderMapper {
 
     int updateByPrimaryKeySelective(Order record);
 
-    int updateByPrimaryKey(Order record);
-
     String selectCurrentLastNo(String date);
 }

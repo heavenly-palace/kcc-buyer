@@ -1,11 +1,16 @@
 package com.kcc.buyer.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
+import com.google.gson.Gson;
 import com.kcc.buyer.common.ResponseEntity;
 import com.kcc.buyer.domain.*;
 import com.kcc.buyer.mapper.*;
 import com.kcc.buyer.util.GeneratePdf;
 import com.kcc.buyer.util.ObjectUtil;
+import org.apache.commons.beanutils.BeanMap;
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +22,10 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -134,8 +142,8 @@ public class BuyerService {
     }
 
     @Transactional
-    public void updateProductList(List<Product> productList){
-        productMapper.updateProductBatch(productList);
+    public void updateProductList(Product product){
+        productMapper.updateByPrimaryKeySelective(product);
     }
 
     @Transactional
@@ -199,21 +207,30 @@ public class BuyerService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity getOrderAll(Integer pageNum, Integer pageSize){
+    public ResponseEntity getOrderAll(Integer pageNum, Integer pageSize) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         PageHelper.startPage(pageNum, pageSize);
         List<Order> orderList = orderMapper.selectOrderAll();
+        List<Map<Object,Object>> maps = new ArrayList<>();
         if(!ObjectUtils.isEmpty(orderList)){
             for (Order order:orderList
             ) {
+                Map<Object,Object> orderMap = new HashMap<>();
+                orderMap.put("id", order.getId());
+                orderMap.put("orderNo", order.getOrderUuid());
+                orderMap.put("status", order.getStatus());
                 Integer orderId = order.getId();
-                List<CompanyInfo> companyInfoList = companyInfoMapper.selectByOrderId(orderId);
-                order.setCompanyInfoList(companyInfoList);
-
-                List<OrderDetail> orderDetails = orderDetailMapper.selectByOrderId(orderId);
-                order.setOrderDetailList(orderDetails);
+                List<CompanyInfo> companyInfoList = companyInfoMapper.selectOrderNameByOrderId(orderId);
+                companyInfoList.forEach(companyInfo -> {
+                    if (companyInfo.getType().equals(1)) {
+                        orderMap.put("supplier", companyInfo.getName());
+                    } else {
+                        orderMap.put("buyer", companyInfo.getName());
+                    }
+                });
+                maps.add(orderMap);
             }
         }
-        return ResponseEntity.ok(orderList);
+        return ResponseEntity.ok(maps);
     }
 
     @Transactional(readOnly = true)

@@ -16,6 +16,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @Singleton
@@ -126,9 +127,9 @@ public class BuyerController {
     @PUT
     @Path("/supplier/product")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
-    public ResponseEntity updateProductList(String requestJson){
-        List<Product> productList = gson.fromJson(requestJson,new TypeToken<List<Product>>() {}.getType());
-        buyerService.updateProductList(productList);
+    public ResponseEntity updateProduct(String requestJson){
+        Product product = gson.fromJson(requestJson,new TypeToken<Product>() {}.getType());
+        buyerService.updateProductList(product);
         return ResponseEntity.ok();
     }
 
@@ -156,7 +157,12 @@ public class BuyerController {
     @Path("/order")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     public ResponseEntity getOrderAll(@QueryParam("pageNum") Integer pageNum, @QueryParam("pageSize") Integer pageSize){
-        return buyerService.getOrderAll(pageNum, pageSize);
+        try {
+            return buyerService.getOrderAll(pageNum, pageSize);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @GET

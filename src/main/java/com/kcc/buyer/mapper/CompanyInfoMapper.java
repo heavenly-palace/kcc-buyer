@@ -11,4 +11,6 @@ public interface CompanyInfoMapper {
     List<CompanyInfo> selectSelective(CompanyInfo companyInfo);
 
     List<CompanyInfo> selectByOrderId(Integer orderId);
+
+    List<CompanyInfo> selectOrderNameByOrderId(Integer orderId);
 }

@@ -1,5 +1,7 @@
 package com.kcc.buyer.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 
 public class CompanyInfo implements Serializable {
@@ -8,24 +10,34 @@ public class CompanyInfo implements Serializable {
 
     private Integer id;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String cellphone;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer orderId;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer type;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String contacts;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String email;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String fax;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String location;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String name;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String telephone;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private AccountInfo accountInfo;
 
     public CompanyInfo() {
