@@ -26,8 +26,6 @@ public class OrderDetail implements Serializable {
 
     private Integer quantity;
 
-    private String supplyDate;
-
     private Double taxRate;
 
     public OrderDetail() {
@@ -117,14 +115,6 @@ public class OrderDetail implements Serializable {
         this.quantity = quantity;
     }
 
-    public String getSupplyDate() {
-        return supplyDate;
-    }
-
-    public void setSupplyDate(String supplyDate) {
-        this.supplyDate = supplyDate == null ? null : supplyDate.trim();
-    }
-
     public Double getTaxRate() {
         return taxRate;
     }
@@ -146,7 +136,6 @@ public class OrderDetail implements Serializable {
                 ", totalPrice=" + totalPrice +
                 ", aTTotalPrice=" + aTTotalPrice +
                 ", quantity=" + quantity +
-                ", supplyDate='" + supplyDate + '\'' +
                 ", taxRate=" + taxRate +
                 '}';
     }

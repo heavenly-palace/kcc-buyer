@@ -12,11 +12,10 @@
     <result column="total_price" jdbcType="DOUBLE" property="totalPrice" />
     <result column="at_total_price" jdbcType="DOUBLE" property="aTTotalPrice" />
     <result column="quantity" jdbcType="INTEGER" property="quantity" />
-    <result column="supply_date" jdbcType="VARCHAR" property="supplyDate" />
     <result column="tax_rate" jdbcType="DOUBLE" property="taxRate" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_id, currency, `describe`, pack, price, at_price, total_price, at_total_price, quantity, supply_date, tax_rate
+    id, order_id, currency, `describe`, pack, price, at_price, total_price, at_total_price, quantity, tax_rate
   </sql>
   <select id="selectSelective" parameterType="com.kcc.buyer.domain.OrderDetail" resultMap="BaseResultMap">
     select
@@ -29,9 +28,6 @@
       <if test="describe != null">
         and `describe`=#{describe,jdbcType=VARCHAR}
       </if>
-      <if test="supplyDate != null">
-        and supply_date=#{supplyDate,jdbcType=VARCHAR}
-      </if>
     </trim>
   </select>
   <select id="selectByOrderId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -43,13 +39,13 @@
   <insert id="insertBatch" parameterType="java.util.List">
     insert into order_detail (id, order_id, currency, 
       `describe`, pack, price, at_price, total_price, at_total_price,
-      quantity, supply_date, tax_rate )
+      quantity, tax_rate )
     values
     <foreach collection="collection" item="orderDetail" index="index" separator=",">
       (#{orderDetail.id,jdbcType=INTEGER}, #{orderDetail.orderId,jdbcType=INTEGER}, #{orderDetail.currency,jdbcType=VARCHAR},
       #{orderDetail.describe,jdbcType=VARCHAR}, #{orderDetail.pack,jdbcType=VARCHAR}, #{orderDetail.price,jdbcType=DOUBLE},
       #{orderDetail.aTPrice,jdbcType=DOUBLE},#{orderDetail.totalPrice,jdbcType=DOUBLE}, #{orderDetail.aTTotalPrice,jdbcType=DOUBLE},
-      #{orderDetail.quantity,jdbcType=INTEGER}, #{orderDetail.supplyDate,jdbcType=VARCHAR}, #{orderDetail.taxRate,jdbcType=DOUBLE}
+      #{orderDetail.quantity,jdbcType=INTEGER}, #{orderDetail.taxRate,jdbcType=DOUBLE}
       )
     </foreach>
   </insert>

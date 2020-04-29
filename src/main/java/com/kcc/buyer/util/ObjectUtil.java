@@ -79,6 +79,7 @@ public class ObjectUtil {
         SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
         String date = f.format(new Date());
         String lastNo = orderMapper.selectCurrentLastNo(date);
+        lastNo = lastNo.substring(2);
         if(lastNo == null){
             lastNo =  date + "001";
         }else {

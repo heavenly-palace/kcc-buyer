@@ -104,16 +104,16 @@ public class GeneratePdf {
 
         //生成订单明细表格
         List<OrderDetail> orderDetailList = order.getOrderDetailList();
-        PdfPTable tableOrderDetails = createTable(new float[] { 25, 60, 30, 15, 30, 30, 30, 70});
+        PdfPTable tableOrderDetails = createTable(new float[] { 25, 60, 30, 15, 30, 30, 30});
         addOrderTableTitle(tableOrderDetails);
         for (int i = 0; i < orderDetailList.size(); i++) {
             OrderDetail orderDetail = orderDetailList.get(i);
             addOrderTableCell(tableOrderDetails, i+1, orderDetail);
         }
-        addTableCell(tableOrderDetails, "金额大写", "(税前)"+order.getUpperMoney(),4);
-        addTableCell(tableOrderDetails, "(税后)"+order.getUpperAtMoney(), 3);
-        addTableCell(tableOrderDetails, "金额小写", "(税前)"+order.getMoney(),4);
-        addTableCell(tableOrderDetails, "(税后)"+order.getAtMoney(), 3);
+        addTableCell(tableOrderDetails, "金额大写", "(税前)"+order.getUpperMoney(),2);
+        addTableCell(tableOrderDetails, "(税后)"+order.getUpperAtMoney(), 4);
+        addTableCell(tableOrderDetails, "金额小写", "(税前)"+order.getMoney(),2);
+        addTableCell(tableOrderDetails, "(税后)"+order.getAtMoney(), 4);
 
         try {
             document.add(titleOrder);
@@ -210,7 +210,6 @@ public class GeneratePdf {
         tableOrderDetails.addCell(createCell("币种", keyfont, Element.ALIGN_CENTER));
         tableOrderDetails.addCell(createCell("单价", keyfont, Element.ALIGN_CENTER));
         tableOrderDetails.addCell(createCell("总价", keyfont, Element.ALIGN_CENTER));
-        tableOrderDetails.addCell(createCell("供货日期", keyfont, Element.ALIGN_CENTER));
     }
 
     /**
@@ -227,7 +226,6 @@ public class GeneratePdf {
         tableOrderDetails.addCell(createCell(orderDetail.getCurrency(), keyfont, Element.ALIGN_CENTER));
         tableOrderDetails.addCell(createCell(String.valueOf(orderDetail.getPrice()), keyfont, Element.ALIGN_CENTER));
         tableOrderDetails.addCell(createCell(String.valueOf(orderDetail.getTotalPrice()), keyfont, Element.ALIGN_CENTER));
-        tableOrderDetails.addCell(createCell(orderDetail.getSupplyDate(), keyfont, Element.ALIGN_CENTER));
     }
 
     private void addTableCell(PdfPTable pdfPTable, Object key, Object value){
