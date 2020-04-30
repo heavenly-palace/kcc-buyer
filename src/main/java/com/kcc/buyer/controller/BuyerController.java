@@ -1,8 +1,8 @@
 package com.kcc.buyer.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.kcc.buyer.domain.*;
 import com.kcc.buyer.mapper.*;
@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 @Singleton
@@ -55,16 +54,16 @@ public class BuyerController {
     private Gson gson;
 
     @GET
-    @Path("/supplier")
+    @Path("/company/supplier")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional(readOnly = true)
     public Response getSuppliers(){
         List<Company> suppliers = companyMapper.selectSuppliers();
-        return Response.status(HttpStatus.SC_OK).entity(suppliers).build();
+        return Response.status(Response.Status.OK).entity(suppliers).build();
     }
 
     @GET
-    @Path("/supplier/{supplierId}")
+    @Path("/company/supplier/{supplierId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional(readOnly = true)
     public Response getSupplier(@PathParam("supplierId") Integer supplierId){
@@ -75,11 +74,11 @@ public class BuyerController {
         supplierVO.setAccount(account);
         List<Product> productList = productMapper.selectBySupplierId(supplierVO.getId());
         supplierVO.setProductList(productList);
-        return Response.status(HttpStatus.SC_OK).entity(supplierVO).build();
+        return Response.status(Response.Status.OK).entity(supplierVO).build();
     }
 
     @POST
-    @Path("/supplier")
+    @Path("/company/supplier")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional
     public Response createSupplier(String request){
@@ -89,11 +88,11 @@ public class BuyerController {
         Account account = supplierVO.getAccount();
         account.setId(supplierVO.getId());
         accountMapper.insertSelective(account);
-        return Response.status(HttpStatus.SC_OK).build();
+        return Response.status(Response.Status.OK).build();
     }
 
     @PUT
-    @Path("/supplier")
+    @Path("/company/supplier")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional
     public Response updateSupplier(String request){
@@ -104,22 +103,22 @@ public class BuyerController {
         if(supplierVO.getAccount() != null && supplierVO.getAccount().getId() != null){
             accountMapper.updateByPrimaryKeySelective(supplierVO.getAccount());
         }
-        return Response.status(HttpStatus.SC_OK).build();
+        return Response.status(Response.Status.OK).build();
     }
 
     @POST
-    @Path("/supplier/product")
+    @Path("/company/supplier/product")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional
     public Response createProducts(String request){
         List<Product> productList = gson.fromJson(request, new TypeToken<List<Product>>() {}.getType());
         productList = objectUtil.getProductNo(productList);
         productMapper.insertBatch(productList);
-        return Response.status(HttpStatus.SC_OK).build();
+        return Response.status(Response.Status.OK).build();
     }
 
     @PUT
-    @Path("/supplier/product")
+    @Path("/company/supplier/product")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional
     public Response updateProducts(String request){
@@ -132,41 +131,50 @@ public class BuyerController {
                 productMapper.updateByPrimaryKeySelective(product);
             }
         });
-        return Response.status(HttpStatus.SC_OK).build();
+        return Response.status(Response.Status.OK).build();
     }
 
     @DELETE
-    @Path("/supplier/{supplierId}")
+    @Path("/company/supplier/product/{productId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    @Transactional
+    public Response deleteProduct(@PathParam("productId") Integer productId){
+        productMapper.deleteByPrimaryKey(productId);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @DELETE
+    @Path("/company/supplier/{supplierId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional
     public Response deleteSupplier(@PathParam("supplierId") Integer supplierId){
         companyMapper.deleteByPrimaryKey(supplierId);
-        return Response.status(HttpStatus.SC_OK).build();
+        return Response.status(Response.Status.OK).build();
     }
 
 
     @GET
-    @Path("/buyer")
+    @Path("/company/buyer")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional(readOnly = true)
     public Response getBuyers(){
         List<Company> buyers = companyMapper.selectBuyers();
-        return Response.status(HttpStatus.SC_OK).entity(buyers).build();
+        return Response.status(Response.Status.OK).entity(buyers).build();
     }
 
     @GET
-    @Path("/buyer/{buyerId}")
+    @Path("/company/buyer/{buyerId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional(readOnly = true)
     public Response getBuyer(@PathParam("buyerId") Integer buyerId){
         CompanyVO buyerVO = (CompanyVO) companyMapper.selectByPrimaryKey(buyerId);
         Account account = accountMapper.selectByPrimaryKey(buyerId);
         buyerVO.setAccount(account);
-        return Response.status(HttpStatus.SC_OK).entity(buyerVO).build();
+        return Response.status(Response.Status.OK).entity(buyerVO).build();
     }
 
     @POST
-    @Path("/buyer")
+    @Path("/company/buyer")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional
     public Response createBuyer(String request){
@@ -176,11 +184,11 @@ public class BuyerController {
         Account account = buyerVO.getAccount();
         account.setId(buyerVO.getId());
         accountMapper.insertSelective(account);
-        return Response.status(HttpStatus.SC_OK).build();
+        return Response.status(Response.Status.OK).build();
     }
 
     @PUT
-    @Path("/buyer")
+    @Path("/company/buyer")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional
     public Response updateBuyer(String request){
@@ -191,22 +199,23 @@ public class BuyerController {
         if(buyeryVO.getAccount() != null && buyeryVO.getAccount().getId() != null){
             accountMapper.updateByPrimaryKeySelective(buyeryVO.getAccount());
         }
-        return Response.status(HttpStatus.SC_OK).build();
+        return Response.status(Response.Status.OK).build();
     }
 
     @DELETE
-    @Path("/buyer/{buyerId}")
+    @Path("/company/buyer/{buyerId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     public Response deleteBuyer(@PathParam("buyerId") Integer buyerId){
         companyMapper.deleteByPrimaryKey(buyerId);
-        return Response.status(HttpStatus.SC_OK).build();
+        return Response.status(Response.Status.OK).build();
     }
 
     @GET
     @Path("/order")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     @Transactional(readOnly = true)
-    public Response getOrders(){
+    public Response getOrders(@QueryParam("pageNum") Integer pageNum, @QueryParam("pageSize") Integer pageSize){
+        PageHelper.startPage(pageNum, pageSize);
         List<JSONObject> orders = new ArrayList<>();
         List<Order> orderList = orderMapper.selectOrderAll();
         orderList.forEach(order -> {
@@ -220,7 +229,7 @@ public class BuyerController {
             orderJson.put("buyer", buyer.getName());
             orders.add(orderJson);
         });
-        return Response.status(HttpStatus.SC_OK).entity(orders).build();
+        return Response.status(Response.Status.OK).entity(orders).build();
     }
 
     @GET
@@ -242,7 +251,7 @@ public class BuyerController {
 
         orderVO.setBuyerAgent(buyerAgentMapper.selectByPrimaryKey(orderVO.getId()));
         orderVO.setOrderDetailList(orderDetailMapper.selectByOrderId(orderVO.getId()));
-        return Response.status(HttpStatus.SC_OK).entity(orderVO).build();
+        return Response.status(Response.Status.OK).entity(orderVO).build();
     }
 
     @POST
@@ -260,7 +269,7 @@ public class BuyerController {
         List<OrderDetail> orderDetailList = orderVO.getOrderDetailList();
         orderDetailList.forEach(orderDetail -> orderDetail.setOrderId(orderId));
         orderDetailMapper.insertBatch(orderDetailList);
-        return Response.status(HttpStatus.SC_OK).entity(orderVO).build();
+        return Response.status(Response.Status.OK).entity(orderVO).build();
     }
 
     @DELETE
@@ -269,7 +278,7 @@ public class BuyerController {
     @Transactional(readOnly = true)
     public Response deleteOrders(@PathParam("orderId") Integer orderId){
         orderMapper.deleteByPrimaryKey(orderId);
-        return Response.status(HttpStatus.SC_OK).build();
+        return Response.status(Response.Status.OK).build();
     }
 
     @GET
@@ -300,7 +309,7 @@ public class BuyerController {
         outputStream.write(byteArrayOutputStream.toByteArray());
         outputStream.flush();
         outputStream.close();
-        return Response.status(HttpStatus.SC_OK).build();
+        return Response.status(Response.Status.OK).build();
     }
 
 }
