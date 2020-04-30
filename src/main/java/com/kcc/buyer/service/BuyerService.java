@@ -1,29 +1,8 @@
 package com.kcc.buyer.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.pagehelper.PageHelper;
-import com.google.gson.Gson;
-import com.kcc.buyer.common.ResponseEntity;
-import com.kcc.buyer.domain.*;
-import com.kcc.buyer.mapper.*;
-import com.kcc.buyer.util.GeneratePdf;
 import com.kcc.buyer.util.ObjectUtil;
-import org.apache.commons.beanutils.BeanMap;
-import org.apache.commons.beanutils.BeanUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 
 @Service
 public class BuyerService {
@@ -31,14 +10,8 @@ public class BuyerService {
     @Autowired
     private ObjectUtil objectUtil;
 
-    @Autowired
+    /*@Autowired
     private OrderMapper orderMapper;
-
-    @Autowired
-    private CompanyInfoMapper companyInfoMapper;
-
-    @Autowired
-    private AccountInfoMapper accountInfoMapper;
 
     @Autowired
     private OrderDetailMapper orderDetailMapper;
@@ -269,6 +242,6 @@ public class BuyerService {
             outputStream.flush();
             outputStream.close();
         }
-    }
+    }*/
 
 }

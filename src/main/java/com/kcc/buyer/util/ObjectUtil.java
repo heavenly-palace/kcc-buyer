@@ -1,6 +1,7 @@
 package com.kcc.buyer.util;
 
 import com.kcc.buyer.domain.Company;
+import com.kcc.buyer.domain.CompanyVO;
 import com.kcc.buyer.domain.Order;
 import com.kcc.buyer.domain.Product;
 import com.kcc.buyer.mapper.CompanyMapper;
@@ -26,6 +27,7 @@ public class ObjectUtil {
     @Autowired
     private OrderMapper orderMapper;
 
+
     public boolean checkObjFieldIsNull(Object obj) {
 
         boolean flag = false;
@@ -42,7 +44,7 @@ public class ObjectUtil {
         }
         return flag;
     }
-    public Company getCompanyNo(Company company){
+    public CompanyVO getCompanyNo(CompanyVO company){
         SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
         String date = f.format(new Date());
         String lastNo = companyMapper.selectCurrentLastNo(company.getType(), date);

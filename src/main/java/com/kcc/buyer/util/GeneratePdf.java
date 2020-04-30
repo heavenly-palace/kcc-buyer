@@ -3,10 +3,7 @@ package com.kcc.buyer.util;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.draw.LineSeparator;
-import com.kcc.buyer.domain.AccountInfo;
-import com.kcc.buyer.domain.CompanyInfo;
-import com.kcc.buyer.domain.Order;
-import com.kcc.buyer.domain.OrderDetail;
+import com.kcc.buyer.domain.*;
 
 import java.io.*;
 import java.util.List;
@@ -18,7 +15,7 @@ public class GeneratePdf {
     private Font headfont;
     private Font keyfont;
     private Font textfont;
-    private Font orderId;
+    private Font orderNo;
 
     // 最大宽度
     private int maxWidth = 520;
@@ -32,7 +29,7 @@ public class GeneratePdf {
             headfont = new Font(bfChinese, 12, Font.NORMAL);
             keyfont = new Font(bfChinese, 10, Font.NORMAL);
             textfont = new Font(bfChinese, 10, Font.NORMAL);
-            orderId = new Font(bfChinese, 8, Font.NORMAL);
+            orderNo = new Font(bfChinese, 8, Font.NORMAL);
         } catch (DocumentException | IOException e) {
             e.printStackTrace();
         }
@@ -40,7 +37,7 @@ public class GeneratePdf {
 
 
 
-    public ByteArrayOutputStream generatePDF(Order order){
+    public ByteArrayOutputStream generatePDF(OrderVO orderVO){
 
         Document document = new Document(); // 默认页面大小是A4
         document.addTitle("k.c communication");
@@ -70,8 +67,8 @@ public class GeneratePdf {
         //订单编号
         Phrase number = new Phrase();
         number.setLeading(30f);
-        number.setFont(orderId);
-        number.add("Number: " + order.getOrderUuid());
+        number.setFont(orderNo);
+        number.add("Number: " + orderVO.getOrderUuid());
 
         // 直线
         Paragraph p1 = new Paragraph();
@@ -79,41 +76,33 @@ public class GeneratePdf {
         p1.setSpacingAfter(40f);
         p1.add(new Chunk(new LineSeparator()));
 
-        CompanyInfo supplier;
-        CompanyInfo buyer;
-        List<CompanyInfo> companyInfoList = order.getCompanyInfoList();
-        if(companyInfoList.get(0).getType().equals(1)){
-            buyer = companyInfoList.get(1);
-            supplier = companyInfoList.get(0);
-        }else {
-            buyer = companyInfoList.get(0);
-            supplier = companyInfoList.get(1);
-        }
+        CompanyVO supplierVO = orderVO.getSupplier();
+        CompanyVO buyerVO = orderVO.getBuyer();
 
         //生成厂商公司基本信息表格
         PdfPTable tableCompany = createTable(new float[] { 60, 120, 60, 120 });
-        createTableCompany(tableCompany, buyer, supplier);
+        createTableCompany(tableCompany, buyerVO, supplierVO);
 
         //生成采购商账户信息表格
         PdfPTable tableBuyerAccount = createTable(new float[] { 60, 120, 60, 120});
-        createTableAccount(tableBuyerAccount, buyer);
+        createTableAccount(tableBuyerAccount, buyerVO);
 
         //生成供应商账户信息表格
         PdfPTable tableSupplierAccount = createTable(new float[] { 60, 120, 60, 120});
-        createTableAccount(tableSupplierAccount, supplier);
+        createTableAccount(tableSupplierAccount, supplierVO);
 
         //生成订单明细表格
-        List<OrderDetail> orderDetailList = order.getOrderDetailList();
+        List<OrderDetail> orderDetailList = orderVO.getOrderDetailList();
         PdfPTable tableOrderDetails = createTable(new float[] { 25, 60, 30, 15, 30, 30, 30});
         addOrderTableTitle(tableOrderDetails);
         for (int i = 0; i < orderDetailList.size(); i++) {
             OrderDetail orderDetail = orderDetailList.get(i);
             addOrderTableCell(tableOrderDetails, i+1, orderDetail);
         }
-        addTableCell(tableOrderDetails, "金额大写", "(税前)"+order.getUpperMoney(),2);
-        addTableCell(tableOrderDetails, "(税后)"+order.getUpperAtMoney(), 4);
-        addTableCell(tableOrderDetails, "金额小写", "(税前)"+order.getMoney(),2);
-        addTableCell(tableOrderDetails, "(税后)"+order.getAtMoney(), 4);
+        addTableCell(tableOrderDetails, "金额大写", "(税前)"+orderVO.getUpperMoney(),2);
+        addTableCell(tableOrderDetails, "(税后)"+orderVO.getUpperAtMoney(), 4);
+        addTableCell(tableOrderDetails, "金额小写", "(税前)"+orderVO.getMoney(),2);
+        addTableCell(tableOrderDetails, "(税后)"+orderVO.getAtMoney(), 4);
 
         try {
             document.add(titleOrder);
@@ -156,48 +145,48 @@ public class GeneratePdf {
     /**
      * 创建厂商基本信息单元格
      * @param pdfPTable
-     * @param buyer
-     * @param supplier
+     * @param buyerVO
+     * @param supplierVO
      */
-    private void createTableCompany(PdfPTable pdfPTable, CompanyInfo buyer, CompanyInfo supplier){
-        addTableCell(pdfPTable, "供应商:", supplier.getName());
-        addTableCell(pdfPTable, "采购商:", buyer.getName());
+    private void createTableCompany(PdfPTable pdfPTable, CompanyVO buyerVO, CompanyVO supplierVO){
+        addTableCell(pdfPTable, "供应商:", supplierVO.getName());
+        addTableCell(pdfPTable, "采购商:", buyerVO.getName());
 
-        addTableCell(pdfPTable, "联系人姓名:", supplier.getContacts());
-        addTableCell(pdfPTable, "联系人姓名:", buyer.getContacts());
+        addTableCell(pdfPTable, "联系人姓名:", supplierVO.getContacts());
+        addTableCell(pdfPTable, "联系人姓名:", buyerVO.getContacts());
 
-        addTableCell(pdfPTable, "电子邮件:", supplier.getEmail());
-        addTableCell(pdfPTable, "电子邮件:", buyer.getEmail());
+        addTableCell(pdfPTable, "电子邮件:", supplierVO.getEmail());
+        addTableCell(pdfPTable, "电子邮件:", buyerVO.getEmail());
 
-        addTableCell(pdfPTable, "电话:", supplier.getCellphone());
-        addTableCell(pdfPTable, "电话:", buyer.getCellphone());
+        addTableCell(pdfPTable, "电话:", supplierVO.getCellphone());
+        addTableCell(pdfPTable, "电话:", buyerVO.getCellphone());
 
-        addTableCell(pdfPTable, "传真:", supplier.getFax());
-        addTableCell(pdfPTable, "传真:", buyer.getFax());
+        addTableCell(pdfPTable, "传真:", supplierVO.getFax());
+        addTableCell(pdfPTable, "传真:", buyerVO.getFax());
 
-        addTableCell(pdfPTable, "手机:", supplier.getTelephone());
-        addTableCell(pdfPTable, "手机:", buyer.getTelephone());
+        addTableCell(pdfPTable, "手机:", supplierVO.getTelephone());
+        addTableCell(pdfPTable, "手机:", buyerVO.getTelephone());
 
-        addTableCell(pdfPTable, "地址:", supplier.getLocation());
-        addTableCell(pdfPTable, "地址:", buyer.getLocation());
+        addTableCell(pdfPTable, "地址:", supplierVO.getLocation());
+        addTableCell(pdfPTable, "地址:", buyerVO.getLocation());
     }
 
     /**
      * 创建Company账户信息单元格
      * @param pdfPTable
-     * @param supplier
+     * @param supplierVO
      */
-    private void createTableAccount(PdfPTable pdfPTable, CompanyInfo supplier) {
-        AccountInfo supplierAccountInfo = supplier.getAccountInfo();
+    private void createTableAccount(PdfPTable pdfPTable, CompanyVO supplierVO) {
+        Account account = supplierVO.getAccount();
 
-        addTableCell(pdfPTable, "公司全称:", supplier.getName());
-        addTableCell(pdfPTable, "纳税人识别号:", supplierAccountInfo.getTfn());
+        addTableCell(pdfPTable, "公司全称:", supplierVO.getName());
+        addTableCell(pdfPTable, "纳税人识别号:", account.getTfn());
 
-        addTableCell(pdfPTable, "交货地址:", supplierAccountInfo.getLocation());
-        addTableCell(pdfPTable, "电话号码:", supplierAccountInfo.getTelephone());
+        addTableCell(pdfPTable, "交货地址:", account.getLocation());
+        addTableCell(pdfPTable, "电话号码:", account.getTelephone());
 
-        addTableCell(pdfPTable, "开户银行:", supplierAccountInfo.getBankName());
-        addTableCell(pdfPTable, "银行账号:", supplierAccountInfo.getBankAccount());
+        addTableCell(pdfPTable, "开户银行:", account.getBankName());
+        addTableCell(pdfPTable, "银行账号:", account.getBankAccount());
 
     }
 
