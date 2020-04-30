@@ -172,6 +172,13 @@ public class BuyerController {
         return buyerService.getOrderDetails(orderId);
     }
 
+    @DELETE
+    @Path("/order/{orderId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity deleteOrder(@PathParam("orderId") Integer orderId){
+        return buyerService.deleteOrder(orderId);
+    }
+
     //PDF file generate
     @GET
     @Path("/generatepdf/{orderId}")

@@ -246,6 +246,11 @@ public class BuyerService {
         return  ResponseEntity.ok(order);
     }
 
+    public ResponseEntity deleteOrder(Integer orderId){
+        orderMapper.deleteByPrimaryKey(orderId);
+        return ResponseEntity.ok();
+    }
+
     public void generatePdf(HttpServletResponse response, Integer orderId) throws IOException {
         Order order = orderMapper.selectByPrimaryKey(orderId);
         if(order != null){
