@@ -2,6 +2,7 @@ package com.kcc.buyer.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import com.kcc.buyer.common.ResponseEntity;
@@ -204,11 +205,14 @@ public class BuyerService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity getOrderAll(Integer pageNum, Integer pageSize) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        PageHelper.startPage(pageNum, pageSize);
+    public ResponseEntity getOrderAll(Integer pageNum, Integer pageSize) {
+        Page<Object> page = PageHelper.startPage(pageNum, pageSize);
         List<Order> orderList = orderMapper.selectOrderAll();
-        List<Map<Object,Object>> maps = new ArrayList<>();
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("totalPage", page.getTotal());
+        dataMap.put("pageNum", pageNum);
         if(!ObjectUtils.isEmpty(orderList)){
+            List<Map> orders = new ArrayList<>();
             for (Order order:orderList
             ) {
                 Map<Object,Object> orderMap = new HashMap<>();
@@ -224,10 +228,11 @@ public class BuyerService {
                         orderMap.put("buyer", companyInfo.getName());
                     }
                 });
-                maps.add(orderMap);
+                orders.add(orderMap);
             }
+            dataMap.put("orders", orders);
         }
-        return ResponseEntity.ok(maps);
+        return ResponseEntity.ok(dataMap);
     }
 
     @Transactional(readOnly = true)

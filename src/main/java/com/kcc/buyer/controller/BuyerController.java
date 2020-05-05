@@ -157,12 +157,7 @@ public class BuyerController {
     @Path("/order")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     public ResponseEntity getOrderAll(@QueryParam("pageNum") Integer pageNum, @QueryParam("pageSize") Integer pageSize){
-        try {
-            return buyerService.getOrderAll(pageNum, pageSize);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return buyerService.getOrderAll(pageNum, pageSize);
     }
 
     @GET
