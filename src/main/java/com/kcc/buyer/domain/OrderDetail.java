@@ -28,6 +28,8 @@ public class OrderDetail implements Serializable {
 
     private Double taxRate;
 
+    private String type;
+
     public OrderDetail() {
     }
 
@@ -123,6 +125,14 @@ public class OrderDetail implements Serializable {
         this.taxRate = taxRate;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "OrderDetail{" +
@@ -137,6 +147,7 @@ public class OrderDetail implements Serializable {
                 ", aTTotalPrice=" + aTTotalPrice +
                 ", quantity=" + quantity +
                 ", taxRate=" + taxRate +
+                ", type='" + type + '\'' +
                 '}';
     }
 }
