@@ -2,6 +2,7 @@ package com.kcc.buyer.util;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import com.kcc.buyer.domain.AccountInfo;
 import com.kcc.buyer.domain.CompanyInfo;
@@ -18,6 +19,7 @@ public class GeneratePdf {
     private Font headfont;
     private Font keyfont;
     private Font textfont;
+    private Font signature;
     private Font orderId;
 
     // 最大宽度
@@ -29,6 +31,7 @@ public class GeneratePdf {
         try {
             bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
             titlefont = new Font(bfChinese, 16, Font.BOLD);
+            signature = new Font(bfChinese, 18, Font.NORMAL);
             headfont = new Font(bfChinese, 12, Font.NORMAL);
             keyfont = new Font(bfChinese, 10, Font.NORMAL);
             textfont = new Font(bfChinese, 10, Font.NORMAL);
@@ -116,6 +119,15 @@ public class GeneratePdf {
         addTableCell(tableOrderDetails, "(税后)"+order.getAtMoney(), 4);
 
         try {
+            Paragraph p2 = new Paragraph();
+            p2.add(new Chunk("signature:",signature));
+            p2.setSpacingBefore(140f);
+         //   p2.setSpacingAfter(40f);
+            p2.add(new Chunk(new LineSeparator()));
+            p2.setAlignment(2);
+            p2.setIndentationLeft(300);
+            p2.setPaddingTop(-200f);
+
             document.add(titleOrder);
             document.add(number);
             document.add(p1);
@@ -126,6 +138,7 @@ public class GeneratePdf {
             document.add(tableSupplierAccount);
             document.add(titleOrderDetails);
             document.add(tableOrderDetails);
+            document.add(p2);
         } catch (DocumentException e) {
             e.printStackTrace();
         }
