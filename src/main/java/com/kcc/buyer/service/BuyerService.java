@@ -53,6 +53,9 @@ public class BuyerService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+    private PayPlanMapper payPlanMapper;
+
     private static final Logger logger = LoggerFactory.getLogger(BuyerService.class);
 
     @Transactional(readOnly = true)
@@ -100,6 +103,30 @@ public class BuyerService {
             logger.debug("create buyer failure: " + e.getMessage());
             throw new RuntimeException("create buyer failure: " + e.getMessage());
         }
+    }
+
+    @Transactional
+    public ResponseEntity getProductType(Integer supplierId){
+        List<ProductType> strings = productMapper.selectProductType(supplierId);
+        return ResponseEntity.ok(strings);
+    }
+
+    @Transactional
+    public ResponseEntity deleteProductType(Integer supplierId){
+        productMapper.deleteProductTypeById(supplierId);
+        return ResponseEntity.ok();
+    }
+
+    @Transactional
+    public ResponseEntity getProductType(ProductType productType){
+        ProductType byBean = productMapper.selectProductTypeByBean(productType);
+        return ResponseEntity.ok(byBean);
+    }
+
+    @Transactional
+    public ResponseEntity saveProductType(ProductType productType){
+        productMapper.insertProductType(productType);
+        return ResponseEntity.ok();
     }
 
     @Transactional
@@ -162,6 +189,12 @@ public class BuyerService {
     }
 
     @Transactional(readOnly = true)
+    public ResponseEntity getProductsByType(Integer supplierId, String productType){
+        List<Product> productList = productMapper.selectByProductType(supplierId, productType);
+        return ResponseEntity.ok(productList);
+    }
+
+    @Transactional(readOnly = true)
     public ResponseEntity getBuyerAll(){
         List<Company> companies = companyMapper.selectByBuyerAll();
         return ResponseEntity.ok(companies);
@@ -201,6 +234,10 @@ public class BuyerService {
         List<OrderDetail> orderDetailList = order.getOrderDetailList();
         orderDetailList.forEach(orderDetail -> orderDetail.setOrderId(order.getId()));
         orderDetailMapper.insertBatch(orderDetailList);
+
+        List<PayPlan> payPlanList = order.getPayPlanList();
+        payPlanList.forEach(payPlan -> payPlan.setOrderId(order.getId()));
+        payPlanMapper.insertPayPlanBatch(payPlanList);
         return ResponseEntity.ok();
     }
 
@@ -247,6 +284,9 @@ public class BuyerService {
             });
             List<OrderDetail> orderDetails = orderDetailMapper.selectByOrderId(orderId);
             order.setOrderDetailList(orderDetails);
+
+            List<PayPlan> payPlans = payPlanMapper.selectPayPlanByOrderId(orderId);
+            order.setPayPlanList(payPlans);
         }
         return  ResponseEntity.ok(order);
     }
@@ -267,6 +307,9 @@ public class BuyerService {
             });
             List<OrderDetail> orderDetails = orderDetailMapper.selectByOrderId(orderId);
             order.setOrderDetailList(orderDetails);
+
+            List<PayPlan> payPlans = payPlanMapper.selectPayPlanByOrderId(orderId);
+            order.setPayPlanList(payPlans);
         }
         if(!ObjectUtils.isEmpty(order)){
             GeneratePdf generatePdf = new GeneratePdf();

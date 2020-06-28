@@ -29,6 +29,8 @@ public class Company implements Serializable {
 
     private Integer type;
 
+    private String comment;
+
     private Account account;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -137,6 +139,14 @@ public class Company implements Serializable {
         this.productList = productList;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     @Override
     public String toString() {
         return "Company{" +
@@ -150,6 +160,7 @@ public class Company implements Serializable {
                 ", location='" + location + '\'' +
                 ", telephone='" + telephone + '\'' +
                 ", type=" + type +
+                ", comment='" + comment + '\'' +
                 ", account=" + account +
                 ", productList=" + productList +
                 '}';

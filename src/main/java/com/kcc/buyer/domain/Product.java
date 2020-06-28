@@ -22,9 +22,9 @@ public class Product implements Serializable {
 
     private Double taxRate;
 
-    private Double atPrice;
+    private Double aTPrice;
 
-    private Integer type;
+    private String type;
 
     private Integer status;
 
@@ -48,7 +48,7 @@ public class Product implements Serializable {
     }
 
     public void setNo(String no) {
-        this.no = no == null ? null : no.trim();
+        this.no = no;
     }
 
     public Integer getCompanyId() {
@@ -64,7 +64,7 @@ public class Product implements Serializable {
     }
 
     public void setDescribe(String describe) {
-        this.describe = describe == null ? null : describe.trim();
+        this.describe = describe;
     }
 
     public String getCurrency() {
@@ -72,7 +72,7 @@ public class Product implements Serializable {
     }
 
     public void setCurrency(String currency) {
-        this.currency = currency == null ? null : currency.trim();
+        this.currency = currency;
     }
 
     public String getPack() {
@@ -80,7 +80,7 @@ public class Product implements Serializable {
     }
 
     public void setPack(String pack) {
-        this.pack = pack == null ? null : pack.trim();
+        this.pack = pack;
     }
 
     public Double getPrice() {
@@ -99,19 +99,19 @@ public class Product implements Serializable {
         this.taxRate = taxRate;
     }
 
-    public Double getAtPrice() {
-        return atPrice;
+    public Double getaTPrice() {
+        return aTPrice;
     }
 
-    public void setAtPrice(Double atPrice) {
-        this.atPrice = atPrice;
+    public void setaTPrice(Double aTPrice) {
+        this.aTPrice = aTPrice;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -134,7 +134,8 @@ public class Product implements Serializable {
                 ", pack='" + pack + '\'' +
                 ", price=" + price +
                 ", taxRate=" + taxRate +
-                ", type=" + type +
+                ", aTPrice=" + aTPrice +
+                ", type='" + type + '\'' +
                 ", status=" + status +
                 '}';
     }

@@ -31,6 +31,9 @@ public class Order implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<OrderDetail> orderDetailList;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<PayPlan> payPlanList;
+
     public Integer getId() {
         return id;
     }
@@ -111,6 +114,14 @@ public class Order implements Serializable {
         this.orderDetailList = orderDetailList;
     }
 
+    public List<PayPlan> getPayPlanList() {
+        return payPlanList;
+    }
+
+    public void setPayPlanList(List<PayPlan> payPlanList) {
+        this.payPlanList = payPlanList;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
@@ -121,8 +132,10 @@ public class Order implements Serializable {
                 ", atMoney=" + atMoney +
                 ", upperAtMoney='" + upperAtMoney + '\'' +
                 ", comment='" + comment + '\'' +
+                ", status=" + status +
                 ", companyInfoList=" + companyInfoList +
                 ", orderDetailList=" + orderDetailList +
+                ", payPlanList=" + payPlanList +
                 '}';
     }
 }

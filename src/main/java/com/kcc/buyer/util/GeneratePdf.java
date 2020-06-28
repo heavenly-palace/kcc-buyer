@@ -4,12 +4,12 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import com.itextpdf.text.pdf.draw.LineSeparator;
-import com.kcc.buyer.domain.AccountInfo;
-import com.kcc.buyer.domain.CompanyInfo;
-import com.kcc.buyer.domain.Order;
-import com.kcc.buyer.domain.OrderDetail;
+import com.kcc.buyer.domain.*;
 
 import java.io.*;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class GeneratePdf {
@@ -69,12 +69,13 @@ public class GeneratePdf {
         Paragraph titleBuyerAccount = createTitle("采购商账户信息", headfont);
         Paragraph titleSupplierAccount = createTitle("供应商账户信息", headfont);
         Paragraph titleOrderDetails = createTitle("订单产品明细", headfont);
+        Paragraph titlePayPlan = createTitle("付款计划", headfont);
 
         //订单编号
         Phrase number = new Phrase();
         number.setLeading(30f);
         number.setFont(orderId);
-        number.add("Number: " + order.getOrderUuid());
+        number.add("No: " + order.getOrderUuid());
 
         // 直线
         Paragraph p1 = new Paragraph();
@@ -94,34 +95,41 @@ public class GeneratePdf {
         }
 
         //生成厂商公司基本信息表格
-        PdfPTable tableCompany = createTable(new float[] { 60, 120, 60, 120 });
+        PdfPTable tableCompany = createTable(new float[] { 40, 120, 40, 120 });
         createTableCompany(tableCompany, buyer, supplier);
 
         //生成采购商账户信息表格
-        PdfPTable tableBuyerAccount = createTable(new float[] { 60, 120, 60, 120});
+        PdfPTable tableBuyerAccount = createTable(new float[] { 50, 120, 50, 60});
         createTableAccount(tableBuyerAccount, buyer);
 
         //生成供应商账户信息表格
-        PdfPTable tableSupplierAccount = createTable(new float[] { 60, 120, 60, 120});
+        PdfPTable tableSupplierAccount = createTable(new float[] { 50, 120, 50, 60});
         createTableAccount(tableSupplierAccount, supplier);
 
         //生成订单明细表格
         List<OrderDetail> orderDetailList = order.getOrderDetailList();
-        PdfPTable tableOrderDetails = createTable(new float[] { 25, 60, 30, 15, 30, 30, 30});
+        PdfPTable tableOrderDetails = createTable(new float[] { 20, 60, 30, 20, 30, 20, 30, 30, 30, 30});
         addOrderTableTitle(tableOrderDetails);
         for (int i = 0; i < orderDetailList.size(); i++) {
             OrderDetail orderDetail = orderDetailList.get(i);
             addOrderTableCell(tableOrderDetails, i+1, orderDetail);
         }
-        addTableCell(tableOrderDetails, "金额大写", "(税前)"+order.getUpperMoney(),2);
-        addTableCell(tableOrderDetails, "(税后)"+order.getUpperAtMoney(), 4);
-        addTableCell(tableOrderDetails, "金额小写", "(税前)"+order.getMoney(),2);
-        addTableCell(tableOrderDetails, "(税后)"+order.getAtMoney(), 4);
+        addTableCell(tableOrderDetails, "（金额大写）：    " + order.getUpperAtMoney(),5);
+        addTableCell(tableOrderDetails, "（金额小写）：    " + String.format("%.2f", order.getAtMoney()), 5);
+
+        //生成付款明细项表格
+        List<PayPlan> payPlanList = order.getPayPlanList();
+        PdfPTable tablePayPlan = createTable(new float[] { 9, 50, 25, 25, 30});
+        addOrderPayPlan(tablePayPlan);
+        for (int i = 0; i < payPlanList.size(); i++) {
+            PayPlan payPlan = payPlanList.get(i);
+            addPayPlanTableCell(tablePayPlan, i+1, payPlan);
+        }
 
         try {
             Paragraph p2 = new Paragraph();
             p2.add(new Chunk("signature:",signature));
-            p2.setSpacingBefore(140f);
+            p2.setSpacingBefore(70f);
          //   p2.setSpacingAfter(40f);
             p2.add(new Chunk(new LineSeparator()));
             p2.setAlignment(2);
@@ -138,6 +146,8 @@ public class GeneratePdf {
             document.add(tableSupplierAccount);
             document.add(titleOrderDetails);
             document.add(tableOrderDetails);
+            document.add(titlePayPlan);
+            document.add(tablePayPlan);
             document.add(p2);
         } catch (DocumentException e) {
             e.printStackTrace();
@@ -160,7 +170,7 @@ public class GeneratePdf {
         elements.setIndentationLeft(12); //设置左缩进
         elements.setIndentationRight(12); //设置右缩进
         elements.setFirstLineIndent(24); //设置首行缩进
-        elements.setLeading(20f); //行间距
+        elements.setLeading(10f); //行间距
         elements.setSpacingBefore(20f); //设置段落上空白
         elements.setSpacingAfter(10f); //设置段落下空白
         return elements;
@@ -206,7 +216,7 @@ public class GeneratePdf {
         addTableCell(pdfPTable, "公司全称:", supplier.getName());
         addTableCell(pdfPTable, "纳税人识别号:", supplierAccountInfo.getTfn());
 
-        addTableCell(pdfPTable, "交货地址:", supplierAccountInfo.getLocation());
+        addTableCell(pdfPTable, "公司地址:", supplierAccountInfo.getLocation());
         addTableCell(pdfPTable, "电话号码:", supplierAccountInfo.getTelephone());
 
         addTableCell(pdfPTable, "开户银行:", supplierAccountInfo.getBankName());
@@ -216,13 +226,24 @@ public class GeneratePdf {
 
 
     private void addOrderTableTitle(PdfPTable tableOrderDetails){
-        tableOrderDetails.addCell(createCell("品目编号", keyfont, Element.ALIGN_CENTER));
-        tableOrderDetails.addCell(createCell("设备/服务描述", keyfont, Element.ALIGN_CENTER));
-        tableOrderDetails.addCell(createCell("单位包装", keyfont, Element.ALIGN_CENTER));
-        tableOrderDetails.addCell(createCell("数量", keyfont, Element.ALIGN_CENTER));
-        tableOrderDetails.addCell(createCell("币种", keyfont, Element.ALIGN_CENTER));
-        tableOrderDetails.addCell(createCell("单价", keyfont, Element.ALIGN_CENTER));
-        tableOrderDetails.addCell(createCell("总价", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("编号", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("设备/服务描述", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("单位包装", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("数量", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("币种", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("税率", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("税前单价", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("税金", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("税后单价", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("总价", keyfont, Element.ALIGN_CENTER));
+    }
+
+    private void addOrderPayPlan(PdfPTable tableOrderDetails){
+        tableOrderDetails.addCell(createCellColor("编号", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("付款明细项", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("计划日期", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("付款比例", keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCellColor("付款金额", keyfont, Element.ALIGN_CENTER));
     }
 
     /**
@@ -237,18 +258,40 @@ public class GeneratePdf {
         tableOrderDetails.addCell(createCell(orderDetail.getPack(), keyfont, Element.ALIGN_CENTER));
         tableOrderDetails.addCell(createCell(String.valueOf(orderDetail.getQuantity()), keyfont, Element.ALIGN_CENTER));
         tableOrderDetails.addCell(createCell(orderDetail.getCurrency(), keyfont, Element.ALIGN_CENTER));
-        tableOrderDetails.addCell(createCell(String.valueOf(orderDetail.getPrice()), keyfont, Element.ALIGN_CENTER));
-        tableOrderDetails.addCell(createCell(String.valueOf(orderDetail.getTotalPrice()), keyfont, Element.ALIGN_CENTER));
+        NumberFormat num = NumberFormat.getPercentInstance();
+        String rates = num.format(orderDetail.getTaxRate() / 100);
+        tableOrderDetails.addCell(createCell(rates, keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCell(String.valueOf(String.format("%.2f", orderDetail.getPrice())), keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCell(String.valueOf(String.format("%.2f", orderDetail.getaTPrice() - orderDetail.getPrice())), keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCell(String.valueOf(String.format("%.2f", orderDetail.getaTPrice())), keyfont, Element.ALIGN_CENTER));
+        tableOrderDetails.addCell(createCell(String.valueOf(String.format("%.2f", orderDetail.getTotalPrice())), keyfont, Element.ALIGN_CENTER));
+    }
+
+    /**
+     * 创建PayPlan单元格
+     * @param tablePayPlan
+     * @param index 下标
+     * @param payPlan
+     */
+    private void addPayPlanTableCell(PdfPTable tablePayPlan, int index, PayPlan payPlan){
+        tablePayPlan.addCell(createCell(String.valueOf(index), keyfont, Element.ALIGN_CENTER));
+        tablePayPlan.addCell(createCell(payPlan.getDescribe(), keyfont, Element.ALIGN_CENTER));
+        Date planPlanDate = payPlan.getPlanDate();
+        SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
+        String date = f.format(planPlanDate);
+        tablePayPlan.addCell(createCell(date, keyfont, Element.ALIGN_CENTER));
+        tablePayPlan.addCell(createCell(String.valueOf(payPlan.getPayRatio()), keyfont, Element.ALIGN_CENTER));
+        tablePayPlan.addCell(createCell(String.valueOf(String.format("%.2f", payPlan.getPayMoney())), keyfont, Element.ALIGN_LEFT));
     }
 
     private void addTableCell(PdfPTable pdfPTable, Object key, Object value){
-        pdfPTable.addCell(createCell(String.valueOf(key), keyfont, Element.ALIGN_CENTER));
-        pdfPTable.addCell(createCell(String.valueOf(value), keyfont, Element.ALIGN_CENTER));
+        pdfPTable.addCell(createCellColor(String.valueOf(key), keyfont, Element.ALIGN_LEFT));
+        pdfPTable.addCell(createCell(String.valueOf(value), keyfont, Element.ALIGN_LEFT));
     }
 
     private void addTableCell(PdfPTable pdfPTable, Object key, Object value, int colspan){
-        pdfPTable.addCell(createCell(String.valueOf(key), keyfont, Element.ALIGN_CENTER));
-        pdfPTable.addCell(createCell(String.valueOf(value), keyfont, Element.ALIGN_CENTER, colspan));
+        pdfPTable.addCell(createCell(String.valueOf(key), keyfont, Element.ALIGN_LEFT));
+        pdfPTable.addCell(createCell(String.valueOf(value), keyfont, Element.ALIGN_LEFT, colspan));
     }
 
     /**
@@ -258,7 +301,7 @@ public class GeneratePdf {
      * @param colspan 跨列
      */
     private void addTableCell(PdfPTable pdfPTable, Object value, int colspan){
-        pdfPTable.addCell(createCell(String.valueOf(value), keyfont, Element.ALIGN_CENTER, colspan));
+        pdfPTable.addCell(createCell(String.valueOf(value), keyfont, Element.ALIGN_LEFT, colspan));
     }
 
 
@@ -287,6 +330,17 @@ public class GeneratePdf {
         PdfPCell cell = new PdfPCell();
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(align);
+        cell.setMinimumHeight(10);
+        cell.setPhrase(new Phrase(value, font));
+        return cell;
+    }
+
+    private PdfPCell createCellColor(String value, Font font, int align) {
+        PdfPCell cell = new PdfPCell();
+        cell.setBackgroundColor(new BaseColor(100,100,100,100));
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(align);
+        cell.setMinimumHeight(10);
         cell.setPhrase(new Phrase(value, font));
         return cell;
     }
@@ -302,6 +356,7 @@ public class GeneratePdf {
         PdfPCell cell = new PdfPCell();
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(align);
+        cell.setMinimumHeight(20);
         cell.setColspan(colspan);
         cell.setPhrase(new Phrase(value, font));
         return cell;

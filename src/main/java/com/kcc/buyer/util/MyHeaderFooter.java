@@ -55,6 +55,6 @@ public class MyHeaderFooter extends PdfPageEventHelper {
     // 全部完成后，将总页数的pdf模版写到指定位置
     public void onCloseDocument(PdfWriter writer,Document document) {
         String text = "总" + (writer.getPageNumber()) + "页";
-        ColumnText.showTextAligned(totalPage, Element.ALIGN_LEFT, new Paragraph(text,hfFont), 2, 4, 0);
+        ColumnText.showTextAligned(totalPage, Element.ALIGN_LEFT, new Paragraph(text,hfFont), 2, 6, 0);
     }
 }

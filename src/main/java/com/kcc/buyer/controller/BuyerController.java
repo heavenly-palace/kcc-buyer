@@ -1,15 +1,20 @@
 package com.kcc.buyer.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.kcc.buyer.common.ResponseEntity;
 import com.kcc.buyer.service.BuyerService;
 import com.kcc.buyer.domain.*;
+import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -111,6 +116,50 @@ public class BuyerController {
         return buyerService.getProducts(supplierId);
     }
 
+    @GET
+    @Path("/supplier/productType")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity getProductType(@QueryParam("supplierId") Integer supplierId){
+        return buyerService.getProductType(supplierId);
+    }
+
+    @POST
+    @Path("/supplier/productType")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity insertProductType(String requestJson){
+        if(requestJson.isEmpty()){
+            return ResponseEntity.jsonError();
+        }
+        ProductType productType = gson.fromJson(requestJson, ProductType.class);
+        ResponseEntity entity = buyerService.getProductType(productType);
+        if(entity.getData() != null){
+            return ResponseEntity.ok("请勿添加重复产品类型！");
+        }
+        return buyerService.saveProductType(productType);
+    }
+
+    @DELETE
+    @Path("/supplier/productType/{productTypeId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity deleteProductType(@PathParam("productTypeId") Integer productTypeId){
+        return buyerService.deleteProductType(productTypeId);
+    }
+
+    @POST
+    @Path("/supplier/product/productType")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public ResponseEntity getProductsByType(String requestJson){
+        Product product = gson.fromJson(requestJson, Product.class);
+        String productType = product.getType();
+        Integer supplierId = product.getCompanyId();
+        ResponseEntity productsByType = null;
+        if(supplierId != null && !productType.isEmpty()){
+            productsByType = buyerService.getProductsByType(supplierId, productType);
+        }
+        return productsByType;
+    }
+
     @POST
     @Path("/supplier/product")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
@@ -146,6 +195,7 @@ public class BuyerController {
     @Path("/order")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     public ResponseEntity createOrder(String request){
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         Order order = gson.fromJson(request,new TypeToken<Order>() {}.getType());
         if(!ObjectUtils.isEmpty(order)){
             return buyerService.createOrder(order);

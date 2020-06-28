@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.buyer.mapper.PayPlanMapper">
+    <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.PayPlan">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="describe" jdbcType="VARCHAR" property="describe" />
+        <result column="plan_date" jdbcType="DATE" property="planDate" />
+        <result column="pay_ratio" jdbcType="VARCHAR" property="payRatio" />
+        <result column="pay_money" jdbcType="DOUBLE" property="payMoney" />
+        <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, `describe`, plan_date, `pay_ratio`, pay_money, order_id
+  </sql>
+
+
+    <insert id="insertPayPlanBatch" parameterType="java.util.List">
+        insert into pay_plan (id, `describe`, plan_date,
+        `pay_ratio`, pay_money, order_id)
+        values
+        <foreach collection="collection" item="payPlan" index="index" separator=",">
+            (#{payPlan.id,jdbcType=INTEGER}, #{payPlan.describe,jdbcType=VARCHAR}, #{payPlan.planDate,jdbcType=DATE},
+            #{payPlan.payRatio,jdbcType=VARCHAR}, #{payPlan.payMoney,jdbcType=DOUBLE}, #{payPlan.orderId,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <select id="selectPayPlanByOrderId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from pay_plan
+        where order_id = #{orderId}
+    </select>
+</mapper>

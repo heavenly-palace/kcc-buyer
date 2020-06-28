@@ -10,13 +10,63 @@
     <result column="pack" jdbcType="VARCHAR" property="pack" />
     <result column="price" jdbcType="DOUBLE" property="price" />
     <result column="tax_rate" jdbcType="DOUBLE" property="taxRate" />
-    <result column="at_price" jdbcType="DOUBLE" property="atPrice" />
-    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="at_price" jdbcType="DOUBLE" property="aTPrice" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <resultMap id="ProductTypeBase" type="com.kcc.buyer.domain.ProductType">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="product_type" jdbcType="VARCHAR" property="productType" />
+    <result column="supplier_id" jdbcType="INTEGER" property="supplierId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, `no`, company_id, `describe`, currency, pack, price, tax_rate, at_price, `type`, status
   </sql>
+
+  <insert id="insertProductType" parameterType="com.kcc.buyer.domain.ProductType">
+    insert into product_type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productType != null">
+        `product_type`,
+      </if>
+      <if test="supplierId != null">
+        supplier_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierId != null">
+        #{supplierId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectProductType" parameterType="java.lang.Integer" resultMap="ProductTypeBase">
+        select
+        id, product_type, supplier_id
+        from `product_type`
+        where supplier_id = #{supplierId}
+  </select>
+
+  <select id="selectProductTypeByBean" parameterType="com.kcc.buyer.domain.ProductType" resultMap="ProductTypeBase">
+    select
+        id, product_type, supplier_id
+        from `product_type`
+        where supplier_id = #{supplierId} and product_type = #{productType}
+  </select>
+
+  <delete id="deleteProductTypeById" parameterType="java.lang.Integer">
+    delete from `product_type`
+    where id = #{productTypeId}
+  </delete>
 
   <select id="selectBySupplier" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -35,15 +85,21 @@
     insert into product (id, `no`, company_id,
       `describe`, currency, pack,
       price, tax_rate, at_price, `type`,
-      status)
+      `status`)
     values
     <foreach collection="collection" item="product" index="index" separator=",">
       (#{product.id,jdbcType=INTEGER}, #{product.no,jdbcType=VARCHAR}, #{product.companyId,jdbcType=INTEGER},
       #{product.describe,jdbcType=VARCHAR}, #{product.currency,jdbcType=VARCHAR}, #{product.pack,jdbcType=VARCHAR},
-      #{product.price,jdbcType=DOUBLE}, #{product.taxRate,jdbcType=DOUBLE}, #{product.atPrice,jdbcType=DOUBLE},
-       #{product.type,jdbcType=INTEGER}, #{product.status,jdbcType=INTEGER})
+      #{product.price,jdbcType=DOUBLE}, #{product.taxRate,jdbcType=DOUBLE}, #{product.aTPrice,jdbcType=DOUBLE},
+       #{product.type,jdbcType=VARCHAR}, #{product.status,jdbcType=INTEGER})
     </foreach>
   </insert>
+  <select id="selectByProductType" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product
+    where company_id = #{supplierId} and `type` = #{productType}
+  </select>
   <insert id="insertSelective" parameterType="com.kcc.buyer.domain.Product">
     insert into product
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -71,7 +127,7 @@
       <if test="taxRate != null">
         tax_rate,
       </if>
-      <if test="atPrice != null">
+      <if test="aTPrice != null">
         at_price,
       </if>
       <if test="type != null">
@@ -106,11 +162,11 @@
       <if test="taxRate != null">
         #{taxRate,jdbcType=DOUBLE},
       </if>
-      <if test="atPrice != null">
-        #{atPrice,jdbcType=DOUBLE},
+      <if test="aTPrice != null">
+        #{aTPrice,jdbcType=DOUBLE},
       </if>
       <if test="type != null">
-        #{type,jdbcType=INTEGER},
+        #{type,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
@@ -141,11 +197,11 @@
       <if test="taxRate != null">
         tax_rate = #{taxRate,jdbcType=DOUBLE},
       </if>
-      <if test="atPrice != null">
-        at_price = #{atPrice,jdbcType=DOUBLE},
+      <if test="aTPrice != null">
+        at_price = #{aTPrice,jdbcType=DOUBLE},
       </if>
       <if test="type != null">
-        `type` = #{type,jdbcType=INTEGER},
+        `type` = #{type,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
@@ -208,10 +264,10 @@
       </trim>
       <trim prefix="at_price = case" suffix="end,">
         <foreach collection="list" item="item" index="index">
-          <if test="item.atPrice !=null">
-            when id=#{item.id} then #{item.atPrice}
+          <if test="item.aTPrice !=null">
+            when id=#{item.id} then #{item.aTPrice}
           </if>
-          <if test="item.atPrice == null">
+          <if test="item.aTPrice == null">
             when id=#{item.id} then product.at_price
           </if>
         </foreach>
