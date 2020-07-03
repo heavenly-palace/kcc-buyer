@@ -26,7 +26,7 @@ public class Watermark extends PdfPageEventHelper {
             for (int j = 0; j < 5; j++) {
                 ColumnText.showTextAligned(writer.getDirectContentUnder(),
                         Element.ALIGN_CENTER,
-                        new Phrase(this.waterCont == null ? "K.C Communication" : this.waterCont, FONT),
+                        new Phrase(this.waterCont == null ? "IXECLOUD" : this.waterCont, FONT),
                         (50.5f + i * 350),
                         (40.0f + j * 150),
                         writer.getPageNumber() % 2 == 1 ? 45 : -45);

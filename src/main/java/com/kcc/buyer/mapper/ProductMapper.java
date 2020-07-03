@@ -29,4 +29,6 @@ public interface ProductMapper {
     ProductType selectProductTypeByBean(ProductType productType);
 
     int insertProductType(ProductType product);
+
+    int deleteByPrimaryKeyStatus(Integer id);
 }

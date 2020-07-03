@@ -26,7 +26,12 @@ public class Product implements Serializable {
 
     private String type;
 
+    private String productModel;
+
+    private String manufacturerName;
+
     private Integer status;
+
 
     public Product() {
     }
@@ -123,6 +128,22 @@ public class Product implements Serializable {
         this.status = status;
     }
 
+    public String getProductModel() {
+        return productModel;
+    }
+
+    public void setProductModel(String productModel) {
+        this.productModel = productModel;
+    }
+
+    public String getManufacturerName() {
+        return manufacturerName;
+    }
+
+    public void setManufacturerName(String manufacturerName) {
+        this.manufacturerName = manufacturerName;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -136,6 +157,8 @@ public class Product implements Serializable {
                 ", taxRate=" + taxRate +
                 ", aTPrice=" + aTPrice +
                 ", type='" + type + '\'' +
+                ", productModel='" + productModel + '\'' +
+                ", manufacturerName='" + manufacturerName + '\'' +
                 ", status=" + status +
                 '}';
     }

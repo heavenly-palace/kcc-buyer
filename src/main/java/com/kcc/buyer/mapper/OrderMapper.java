@@ -17,5 +17,10 @@ public interface OrderMapper {
 
     int updateByPrimaryKeySelective(Order record);
 
+    int deleteByPrimaryKeySelective(Integer id);
+
     String selectCurrentLastNo(String date);
+
+    //按UUID模糊查询
+    List<Order> selectByOrderUuid(Integer orderUuid);
 }

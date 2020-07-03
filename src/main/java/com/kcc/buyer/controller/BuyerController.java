@@ -217,6 +217,26 @@ public class BuyerController {
         return buyerService.getOrderDetails(orderId);
     }
 
+    @GET
+    @Path("/order/conditions/find")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity getOrderConditions(@QueryParam("pageNum") Integer pageNum,
+                                             @QueryParam("pageSize") Integer pageSize,
+                                             @QueryParam("orderUuid") Integer orderUuid,
+                                             @QueryParam("buyerName") String buyerName,
+                                             @QueryParam("supplierName") String supplierName){
+        if(orderUuid != null  && orderUuid != 0){
+            return buyerService.getOrderConditions(pageNum, pageSize, orderUuid);
+        }else if (!buyerName.isEmpty() && !supplierName.isEmpty()){
+            return null;
+        }else if(!buyerName.isEmpty()){
+            return null;
+        }else if(!supplierName.isEmpty()){
+            return null;
+        }
+        return null;
+    }
+
     @DELETE
     @Path("/order/{orderId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
@@ -231,6 +251,28 @@ public class BuyerController {
     public ResponseEntity generatePdf(@Context HttpServletResponse response, @PathParam("orderId") Integer orderId) throws IOException {
         buyerService.generatePdf(response, orderId);
         return ResponseEntity.ok();
+    }
+
+    @POST
+    @Path("/supplier/manufacturer")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity insertManufacturer(String requestJson){
+        Manufacturer manufacturer = gson.fromJson(requestJson, Manufacturer.class);
+        return buyerService.insertManufacturer(manufacturer);
+    }
+
+    @DELETE
+    @Path("/supplier/manufacturer/{manufacturerId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity deleteById(@PathParam("manufacturerId") Integer manufacturerId){
+        return buyerService.deleteManufacturerById(manufacturerId);
+    }
+
+    @GET
+    @Path("/supplier/manufacturer/{manufacturerId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity selectManufacturerBySupplierId(@PathParam("manufacturerId") Integer manufacturerId){
+        return buyerService.selectManufacturerBySupplierId(manufacturerId);
     }
 
 }

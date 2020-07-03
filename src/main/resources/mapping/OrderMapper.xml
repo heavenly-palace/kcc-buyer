@@ -9,13 +9,20 @@
     <result column="at_money" jdbcType="DOUBLE" property="atMoney" />
     <result column="upper_at_money" jdbcType="VARCHAR" property="upperAtMoney" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="in_comment" jdbcType="VARCHAR" property="inComment" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_uuid, money, upper_money, at_money, upper_at_money, comment, status
+    id, order_uuid, money, upper_money, at_money, upper_at_money, comment, in_comment, status
   </sql>
   <select id="selectCurrentLastNo" parameterType="java.lang.String" resultType="java.lang.String">
     select `order_uuid` from `order` where  `order_uuid` like "%"#{date}"%" order by `order_uuid` desc limit 1
+  </select>
+  <select id="selectByOrderUuid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from `order`
+    where `order_uuid` like "%"#{orderUuid}"%"
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -27,17 +34,18 @@
     select
     <include refid="Base_Column_List" />
     from `order`
+    where status = 1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from `order`
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.kcc.buyer.domain.Order">
-    insert into `order` (id, order_uuid, money, upper_money, at_money, at_upper_money, comment, status
+    insert into `order` (id, order_uuid, money, upper_money, at_money, at_upper_money, comment, in_comment
       )
     values (#{id,jdbcType=INTEGER}, #{orderUuid,jdbcType=VARCHAR}, #{money,jdbcType=DOUBLE},
     #{upperMoney,jdbcType=VARCHAR}, #{atMoney,jdbcType=DOUBLE}, #{upperAtMoney,jdbcType=VARCHAR},
-    #{comment,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+    #{comment,jdbcType=VARCHAR}, #{inComment,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.kcc.buyer.domain.Order" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -64,9 +72,12 @@
       <if test="comment != null">
         comment,
       </if>
-      <if test="status != null">
-        status,
+      <if test="inComment != null">
+        in_comment,
       </if>
+      <!--<if test="status != null">
+        status,
+      </if>-->
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -90,9 +101,12 @@
       <if test="comment != null">
         #{comment,jdbcType=VARCHAR},
       </if>
-      <if test="status != null">
-        #{status,jdbcType=INTEGER},
+      <if test="inComment != null">
+        #{inComment,jdbcType=VARCHAR},
       </if>
+      <!--<if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>-->
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.kcc.buyer.domain.Order">
@@ -113,10 +127,18 @@
       <if test="comment != null">
         comment = #{comment,jdbcType=VARCHAR},
       </if>
+      <if test="inComment != null">
+        in_comment = #{inComment,jdbcType=VARCHAR},
+      </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
       </if>
     </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="deleteByPrimaryKeySelective" parameterType="java.lang.Integer">
+    update `order`
+    set status = 0
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

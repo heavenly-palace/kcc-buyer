@@ -23,6 +23,8 @@ public class Order implements Serializable {
 
     private String comment;
 
+    private String inComment;
+
     private Integer status;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -90,6 +92,14 @@ public class Order implements Serializable {
         this.comment = comment == null ? null : comment.trim();
     }
 
+    public String getInComment() {
+        return inComment;
+    }
+
+    public void setInComment(String inComment) {
+        this.inComment = inComment;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -132,6 +142,7 @@ public class Order implements Serializable {
                 ", atMoney=" + atMoney +
                 ", upperAtMoney='" + upperAtMoney + '\'' +
                 ", comment='" + comment + '\'' +
+                ", inComment='" + inComment + '\'' +
                 ", status=" + status +
                 ", companyInfoList=" + companyInfoList +
                 ", orderDetailList=" + orderDetailList +

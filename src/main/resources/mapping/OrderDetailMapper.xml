@@ -13,10 +13,12 @@
     <result column="at_total_price" jdbcType="DOUBLE" property="aTTotalPrice" />
     <result column="quantity" jdbcType="INTEGER" property="quantity" />
     <result column="tax_rate" jdbcType="DOUBLE" property="taxRate" />
+    <result column="manufacturer_name" jdbcType="VARCHAR" property="manufacturerName" />
+    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
     <result column="type" jdbcType="VARCHAR" property="type" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_id, currency, `describe`, pack, price, at_price, total_price, at_total_price, quantity, tax_rate, `type`
+    id, order_id, currency, `describe`, pack, price, at_price, total_price, at_total_price, quantity, tax_rate, manufacturer_name, product_model, `type`
   </sql>
   <select id="selectSelective" parameterType="com.kcc.buyer.domain.OrderDetail" resultMap="BaseResultMap">
     select
@@ -40,13 +42,14 @@
   <insert id="insertBatch" parameterType="java.util.List">
     insert into order_detail (id, order_id, currency, 
       `describe`, pack, price, at_price, total_price, at_total_price,
-      quantity, tax_rate, `type` )
+      quantity, tax_rate, manufacturer_name, product_model, `type` )
     values
     <foreach collection="collection" item="orderDetail" index="index" separator=",">
       (#{orderDetail.id,jdbcType=INTEGER}, #{orderDetail.orderId,jdbcType=INTEGER}, #{orderDetail.currency,jdbcType=VARCHAR},
       #{orderDetail.describe,jdbcType=VARCHAR}, #{orderDetail.pack,jdbcType=VARCHAR}, #{orderDetail.price,jdbcType=DOUBLE},
       #{orderDetail.aTPrice,jdbcType=DOUBLE},#{orderDetail.totalPrice,jdbcType=DOUBLE}, #{orderDetail.aTTotalPrice,jdbcType=DOUBLE},
-      #{orderDetail.quantity,jdbcType=INTEGER}, #{orderDetail.taxRate,jdbcType=DOUBLE}, #{orderDetail.type,jdbcType=VARCHAR}
+      #{orderDetail.quantity,jdbcType=INTEGER}, #{orderDetail.taxRate,jdbcType=DOUBLE}, #{orderDetail.manufacturerName,jdbcType=VARCHAR},
+      #{orderDetail.productModel,jdbcType=VARCHAR}, #{orderDetail.type,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

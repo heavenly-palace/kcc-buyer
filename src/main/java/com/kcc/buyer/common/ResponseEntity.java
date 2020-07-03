@@ -81,6 +81,12 @@ public class ResponseEntity {
                 BaseStatus.ISNULL.getMessage());
     }
 
+    public static ResponseEntity jsonError(String message) {
+        return new ResponseEntity(
+                BaseStatus.ISNULL.getCode(),
+                message);
+    }
+
 //	public ResponseEntity putData(String key, Object value) {
 //		data.put(key, value);
 //		return this;

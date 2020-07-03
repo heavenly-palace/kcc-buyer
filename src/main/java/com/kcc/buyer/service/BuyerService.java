@@ -56,6 +56,9 @@ public class BuyerService {
     @Autowired
     private PayPlanMapper payPlanMapper;
 
+    @Autowired
+    private ManufacturerMapper manufacturerMapper;
+
     private static final Logger logger = LoggerFactory.getLogger(BuyerService.class);
 
     @Transactional(readOnly = true)
@@ -163,7 +166,7 @@ public class BuyerService {
 
     @Transactional
     public void deleteProduct(Integer productId){
-        productMapper.deleteByPrimaryKey(productId);
+        productMapper.deleteByPrimaryKeyStatus(productId);
     }
 
     @Transactional
@@ -248,11 +251,27 @@ public class BuyerService {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("totalPage", page.getTotal());
         dataMap.put("pageNum", pageNum);
+        getOrderListMap(orderList, dataMap);
+        return ResponseEntity.ok(dataMap);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity getOrderConditions(Integer pageNum, Integer pageSize, Integer orderUuid) {
+        Page<Object> page = PageHelper.startPage(pageNum, pageSize);
+        List<Order> orderList = orderMapper.selectByOrderUuid(orderUuid);
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("totalPage", page.getTotal());
+        dataMap.put("pageNum", pageNum);
+        getOrderListMap(orderList, dataMap);
+        return ResponseEntity.ok(dataMap);
+    }
+
+    private void getOrderListMap(List<Order> orderList, Map<String,Object> dataMap){
         if(!ObjectUtils.isEmpty(orderList)){
-            List<Map> orders = new ArrayList<>();
+            List<Map<String,Object>> orders = new ArrayList<>();
             for (Order order:orderList
             ) {
-                Map<Object,Object> orderMap = new HashMap<>();
+                Map<String,Object> orderMap = new HashMap<>();
                 orderMap.put("id", order.getId());
                 orderMap.put("orderNo", order.getOrderUuid());
                 orderMap.put("status", order.getStatus());
@@ -269,7 +288,7 @@ public class BuyerService {
             }
             dataMap.put("orders", orders);
         }
-        return ResponseEntity.ok(dataMap);
+        //return dataMap;
     }
 
     @Transactional(readOnly = true)
@@ -292,7 +311,7 @@ public class BuyerService {
     }
 
     public ResponseEntity deleteOrder(Integer orderId){
-        orderMapper.deleteByPrimaryKey(orderId);
+        orderMapper.deleteByPrimaryKeySelective(orderId);
         return ResponseEntity.ok();
     }
 
@@ -324,4 +343,39 @@ public class BuyerService {
         }
     }
 
+
+    /***
+     * 厂商相关接口
+     * @param manufacturer 厂商对象
+     * @return ResponseEntity
+     */
+    @Transactional
+    public ResponseEntity insertManufacturer(Manufacturer manufacturer){
+        if(manufacturer == null){
+            return ResponseEntity.jsonError("this object is null!");
+        }else {
+            manufacturerMapper.insertManufacturer(manufacturer);
+            return ResponseEntity.ok();
+        }
+    }
+
+    @Transactional
+    public ResponseEntity deleteManufacturerById(Integer manufacturerId){
+        if(manufacturerId > 0){
+            manufacturerMapper.deleteById(manufacturerId);
+            return ResponseEntity.ok();
+        }else {
+            return ResponseEntity.jsonError("id is null!");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity selectManufacturerBySupplierId(Integer supplierId){
+        if(supplierId > 0){
+            List<Manufacturer> manufacturers = manufacturerMapper.selectBySupplierId(supplierId);
+            return ResponseEntity.ok(manufacturers);
+        }else {
+            return ResponseEntity.jsonError("supplierId is null!");
+        }
+    }
 }

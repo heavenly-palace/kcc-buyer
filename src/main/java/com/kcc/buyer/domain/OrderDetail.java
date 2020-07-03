@@ -28,6 +28,10 @@ public class OrderDetail implements Serializable {
 
     private Double taxRate;
 
+    private String manufacturerName;
+
+    private String productModel;
+
     private String type;
 
     public OrderDetail() {
@@ -133,6 +137,22 @@ public class OrderDetail implements Serializable {
         this.type = type;
     }
 
+    public String getManufacturerName() {
+        return manufacturerName;
+    }
+
+    public void setManufacturerName(String manufacturerName) {
+        this.manufacturerName = manufacturerName;
+    }
+
+    public String getProductModel() {
+        return productModel;
+    }
+
+    public void setProductModel(String productModel) {
+        this.productModel = productModel;
+    }
+
     @Override
     public String toString() {
         return "OrderDetail{" +
@@ -147,6 +167,8 @@ public class OrderDetail implements Serializable {
                 ", aTTotalPrice=" + aTTotalPrice +
                 ", quantity=" + quantity +
                 ", taxRate=" + taxRate +
+                ", manufacturerName='" + manufacturerName + '\'' +
+                ", productModel='" + productModel + '\'' +
                 ", type='" + type + '\'' +
                 '}';
     }
