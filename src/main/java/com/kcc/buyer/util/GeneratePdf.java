@@ -29,8 +29,8 @@ public class GeneratePdf {
 
     {
         try {
-            String fontPath = "E:\\BaiduNetdiskDownload\\微软雅黑.ttf";
-            //String fontPath = "/home/font/微软雅黑.ttf";
+            //String fontPath = "E:\\BaiduNetdiskDownload\\微软雅黑.ttf";
+            String fontPath = "/home/font/微软雅黑.ttf";
             bfChinese = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             //Font yahei12 = new Font(baseFont1, 12f);
             //bfChinese = BaseFont.createFont("Microsoft YaHei", "GB2312", BaseFont.NOT_EMBEDDED);

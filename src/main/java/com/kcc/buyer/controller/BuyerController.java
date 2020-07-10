@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -273,6 +274,47 @@ public class BuyerController {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     public ResponseEntity selectManufacturerBySupplierId(@PathParam("manufacturerId") Integer manufacturerId){
         return buyerService.selectManufacturerBySupplierId(manufacturerId);
+    }
+
+    @GET
+    @Path("/supplier/unitPack/{supplierId}/{flag}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity selectUnitPack(@PathParam("supplierId") Integer supplierId, @PathParam("flag") Integer flag){
+        return buyerService.selectUnitPack(supplierId, flag);
+    }
+
+    @POST
+    @Path("/supplier/unitPack")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity insertUnitPack(String jsonRequest){
+        if(!StringUtils.isEmpty(jsonRequest)){
+            UnitPack unitPack = gson.fromJson(jsonRequest, UnitPack.class);
+            return buyerService.insertUnitPack(unitPack);
+        }else {
+            return ResponseEntity.jsonError("json is null");
+        }
+    }
+
+    @DELETE
+    @Path("/supplier/unitPack/{id}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity insertUnitPack(@PathParam("id") Integer id){
+        return buyerService.deleteUnitOrPack(id);
+    }
+
+    @GET
+    @Path("/order/pastComment/{orderId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity selectPastCommentByOrderId(@PathParam("orderId") Integer orderId){
+        return buyerService.selectPastCommentByOrderId(orderId);
+    }
+
+    @PUT
+    @Path("/order/pastComment/update")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
+    public ResponseEntity updateOrderStatus(String requestJson){
+        Order order = gson.fromJson(requestJson, Order.class);
+        return buyerService.updateOrderStatus(order);
     }
 
 }

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.buyer.mapper.UnitPackMapper">
+    <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.UnitPack">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="supplier_id" jdbcType="INTEGER" property="supplierId" />
+        <result column="flag" jdbcType="INTEGER" property="flag" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, `name`, supplier_id, flag
+    </sql>
+
+    <insert id="insertUnitPack" parameterType="com.kcc.buyer.domain.UnitPack">
+        insert into unit_pack
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="supplierId != null">
+                supplier_id,
+            </if>
+            <if test="flag != null">
+                flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="supplierId != null">
+                #{supplierId,jdbcType=INTEGER},
+            </if>
+            <if test="flag != null">
+                #{flag,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectUnitPack" parameterType="com.kcc.buyer.domain.UnitPack" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from unit_pack
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="name != null">
+                and `name` = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="supplierId != null">
+                and supplier_id in (#{supplierId,jdbcType=INTEGER}, 0)
+            </if>
+            <if test="flag != null">
+                and flag = #{flag,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </select>
+
+    <delete id="deleteUnitOrPack" parameterType="java.lang.Integer">
+        delete from unit_pack where id = #{id,jdbcType=INTEGER}
+    </delete>
+</mapper>

@@ -224,8 +224,8 @@
       <if test="productModel != null">
         `product_model` = #{productModel,jdbcType=VARCHAR},
       </if>
-      <if test="manufacturer != null">
-        manufacturer_name = #{manufacturerName,jdbcType=INTEGER},
+      <if test="manufacturerName != null">
+        manufacturer_name = #{manufacturerName,jdbcType=VARCHAR},
       </if>
       <!--<if test="status != null">
         status = #{status,jdbcType=INTEGER},

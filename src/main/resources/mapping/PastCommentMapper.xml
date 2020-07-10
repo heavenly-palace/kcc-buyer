@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.buyer.mapper.PastCommentMapper">
+
+    <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.PastComment">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="comment" jdbcType="VARCHAR" property="comment" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, `comment`, status, `create_time`, order_id
+  </sql>
+
+    <insert id="insertPastComment" parameterType="com.kcc.buyer.domain.PastComment">
+        insert into past_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="comment != null">
+                `comment`,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="orderId != null">
+                order_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="comment != null">
+                #{comment,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderId != null">
+                #{orderId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectPastCommentByOrderId" parameterType="com.kcc.buyer.domain.PastComment" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from past_comment
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="comment != null">
+                and `comment` = #{comment,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                and status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="orderId != null">
+                and order_id = #{orderId,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </select>
+</mapper>

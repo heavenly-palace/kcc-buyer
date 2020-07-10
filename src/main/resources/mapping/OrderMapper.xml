@@ -10,10 +10,11 @@
     <result column="upper_at_money" jdbcType="VARCHAR" property="upperAtMoney" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
     <result column="in_comment" jdbcType="VARCHAR" property="inComment" />
+    <result column="current_status" jdbcType="VARCHAR" property="currentStatus" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_uuid, money, upper_money, at_money, upper_at_money, comment, in_comment, status
+    id, order_uuid, money, upper_money, at_money, upper_at_money, comment, in_comment, current_status, status
   </sql>
   <select id="selectCurrentLastNo" parameterType="java.lang.String" resultType="java.lang.String">
     select `order_uuid` from `order` where  `order_uuid` like "%"#{date}"%" order by `order_uuid` desc limit 1
@@ -41,7 +42,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.kcc.buyer.domain.Order">
-    insert into `order` (id, order_uuid, money, upper_money, at_money, at_upper_money, comment, in_comment
+    insert into `order` (id, order_uuid, money, upper_money, at_money, at_upper_money, comment, in_comment, current_status
       )
     values (#{id,jdbcType=INTEGER}, #{orderUuid,jdbcType=VARCHAR}, #{money,jdbcType=DOUBLE},
     #{upperMoney,jdbcType=VARCHAR}, #{atMoney,jdbcType=DOUBLE}, #{upperAtMoney,jdbcType=VARCHAR},
@@ -75,6 +76,9 @@
       <if test="inComment != null">
         in_comment,
       </if>
+      <if test="currentStatus != null">
+        current_status,
+      </if>
       <!--<if test="status != null">
         status,
       </if>-->
@@ -104,6 +108,9 @@
       <if test="inComment != null">
         #{inComment,jdbcType=VARCHAR},
       </if>
+      <if test="currentStatus != null">
+        #{currentStatus,jdbcType=VARCHAR},
+      </if>
       <!--<if test="status != null">
         #{status,jdbcType=INTEGER},
       </if>-->
@@ -112,23 +119,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.kcc.buyer.domain.Order">
     update `order`
     <set>
-      <if test="money != null">
-        money = #{orderUuid,jdbcType=DOUBLE},
-      </if>
-      <if test="upperMoney != null">
-        upper_money = #{upperMoney,jdbcType=VARCHAR},
-      </if>
-      <if test="atMoney != null">
-        at_money = #{atMoney,jdbcType=DOUBLE},
-      </if>
-      <if test="upperAtMoney != null">
-        upper_at_money = #{upperAtMoney,jdbcType=VARCHAR},
-      </if>
-      <if test="comment != null">
-        comment = #{comment,jdbcType=VARCHAR},
-      </if>
-      <if test="inComment != null">
-        in_comment = #{inComment,jdbcType=VARCHAR},
+      <if test="currentStatus != null">
+        current_status = #{currentStatus,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},

@@ -27,6 +27,8 @@ public class Order implements Serializable {
 
     private Integer status;
 
+    private String currentStatus;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<CompanyInfo> companyInfoList;
 
@@ -35,6 +37,9 @@ public class Order implements Serializable {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<PayPlan> payPlanList;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<PastComment> pastCommentList;
 
     public Integer getId() {
         return id;
@@ -132,6 +137,22 @@ public class Order implements Serializable {
         this.payPlanList = payPlanList;
     }
 
+    public List<PastComment> getPastCommentList() {
+        return pastCommentList;
+    }
+
+    public void setPastCommentList(List<PastComment> pastCommentList) {
+        this.pastCommentList = pastCommentList;
+    }
+
+    public String getCurrentStatus() {
+        return currentStatus;
+    }
+
+    public void setCurrentStatus(String currentStatus) {
+        this.currentStatus = currentStatus;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
@@ -144,9 +165,11 @@ public class Order implements Serializable {
                 ", comment='" + comment + '\'' +
                 ", inComment='" + inComment + '\'' +
                 ", status=" + status +
+                ", currentStatus='" + currentStatus + '\'' +
                 ", companyInfoList=" + companyInfoList +
                 ", orderDetailList=" + orderDetailList +
                 ", payPlanList=" + payPlanList +
+                ", pastCommentList=" + pastCommentList +
                 '}';
     }
 }

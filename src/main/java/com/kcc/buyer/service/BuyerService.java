@@ -59,6 +59,12 @@ public class BuyerService {
     @Autowired
     private ManufacturerMapper manufacturerMapper;
 
+    @Autowired
+    private UnitPackMapper unitPackMapper;
+
+    @Autowired
+    private PastCommentMapper pastCommentMapper;
+
     private static final Logger logger = LoggerFactory.getLogger(BuyerService.class);
 
     @Transactional(readOnly = true)
@@ -377,5 +383,60 @@ public class BuyerService {
         }else {
             return ResponseEntity.jsonError("supplierId is null!");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity selectUnitPack(Integer supplierId, Integer flag){
+        List<UnitPack> unitPacks;
+        if(supplierId > 0 && flag > 0){
+            unitPacks = unitPackMapper.selectUnitPack(new UnitPack(supplierId, flag));
+        }else {
+            return ResponseEntity.jsonError("object is null!");
+        }
+        return ResponseEntity.ok(unitPacks);
+    }
+
+    @Transactional
+    public ResponseEntity insertUnitPack(UnitPack unitPack){
+        if(unitPack != null){
+            unitPackMapper.insertUnitPack(unitPack);
+        }else {
+            return ResponseEntity.jsonError("object is null!");
+        }
+        return ResponseEntity.ok();
+    }
+
+    public ResponseEntity deleteUnitOrPack(Integer id){
+        if(id > 0){
+            unitPackMapper.deleteUnitOrPack(id);
+            return ResponseEntity.ok();
+        }
+        return ResponseEntity.jsonError("id is null!");
+    }
+
+    @Transactional
+    public ResponseEntity updateOrderStatus(Order order){
+        if(!ObjectUtils.isEmpty(order)){
+            orderMapper.updateByPrimaryKeySelective(order);
+
+            List<PastComment> pastCommentList = order.getPastCommentList();
+            if(!ObjectUtils.isEmpty(pastCommentList)){
+                PastComment pastComment = pastCommentList.get(0);
+                pastComment.setOrderId(order.getId());
+                pastComment.setStatus(order.getCurrentStatus());
+                pastCommentMapper.insertPastComment(pastComment);
+                return ResponseEntity.ok();
+            }
+        }
+        throw new RuntimeException("update error!");
+    }
+
+    public ResponseEntity selectPastCommentByOrderId(Integer orderId){
+        if(orderId > 0){
+            List<PastComment> pastComments = pastCommentMapper.selectPastCommentByOrderId(new PastComment(orderId));
+            return ResponseEntity.ok(pastComments);
+        }
+
+        return ResponseEntity.jsonError("return object is null");
     }
 }
