@@ -6,15 +6,12 @@ import com.google.gson.reflect.TypeToken;
 import com.kcc.buyer.common.ResponseEntity;
 import com.kcc.buyer.service.BuyerService;
 import com.kcc.buyer.domain.*;
-import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +19,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @Singleton
@@ -313,8 +309,8 @@ public class BuyerController {
     @Path("/order/pastComment/update")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     public ResponseEntity updateOrderStatus(String requestJson){
-        Order order = gson.fromJson(requestJson, Order.class);
-        return buyerService.updateOrderStatus(order);
+        PastComment pastComment = gson.fromJson(requestJson, PastComment.class);
+        return buyerService.updateOrderStatus(pastComment);
     }
 
 }

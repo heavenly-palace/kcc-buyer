@@ -5,13 +5,13 @@
     <resultMap id="BaseResultMap" type="com.kcc.buyer.domain.PastComment">
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="comment" jdbcType="VARCHAR" property="comment" />
-        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="current_status" jdbcType="VARCHAR" property="currentStatus" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="order_id" jdbcType="INTEGER" property="orderId" />
     </resultMap>
 
     <sql id="Base_Column_List">
-    id, `comment`, status, `create_time`, order_id
+    id, `comment`, current_status, `create_time`, order_id
   </sql>
 
     <insert id="insertPastComment" parameterType="com.kcc.buyer.domain.PastComment">
@@ -23,8 +23,8 @@
             <if test="comment != null">
                 `comment`,
             </if>
-            <if test="status != null">
-                status,
+            <if test="currentStatus != null">
+                current_status,
             </if>
             <if test="createTime != null">
                 create_time,
@@ -40,8 +40,8 @@
             <if test="comment != null">
                 #{comment,jdbcType=VARCHAR},
             </if>
-            <if test="status != null">
-                #{status,jdbcType=VARCHAR},
+            <if test="currentStatus != null">
+                #{currentStatus,jdbcType=VARCHAR},
             </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=TIMESTAMP},
@@ -63,8 +63,8 @@
             <if test="comment != null">
                 and `comment` = #{comment,jdbcType=VARCHAR}
             </if>
-            <if test="status != null">
-                and status = #{status,jdbcType=VARCHAR}
+            <if test="currentStatus != null">
+                and current_status = #{currentStatus,jdbcType=VARCHAR}
             </if>
             <if test="createTime != null">
                 and create_time = #{createTime,jdbcType=TIMESTAMP}

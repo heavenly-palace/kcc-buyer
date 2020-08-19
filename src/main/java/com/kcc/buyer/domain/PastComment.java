@@ -10,7 +10,7 @@ public class PastComment {
 
     private String comment;
 
-    private String status;
+    private String currentStatus;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Timestamp createTime;
@@ -40,12 +40,12 @@ public class PastComment {
         this.comment = comment;
     }
 
-    public String getStatus() {
-        return status;
+    public String getCurrentStatus() {
+        return currentStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCurrentStatus(String currentStatus) {
+        this.currentStatus = currentStatus;
     }
 
     public Timestamp getCreateTime() {
@@ -69,7 +69,7 @@ public class PastComment {
         return "PastComment{" +
                 "id=" + id +
                 ", comment='" + comment + '\'' +
-                ", status='" + status + '\'' +
+                ", currentStatus='" + currentStatus + '\'' +
                 ", createTime=" + createTime +
                 ", orderId=" + orderId +
                 '}';

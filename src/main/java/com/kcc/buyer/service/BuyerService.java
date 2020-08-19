@@ -1,17 +1,12 @@
 package com.kcc.buyer.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.google.gson.Gson;
 import com.kcc.buyer.common.ResponseEntity;
 import com.kcc.buyer.domain.*;
 import com.kcc.buyer.mapper.*;
 import com.kcc.buyer.util.GeneratePdf;
 import com.kcc.buyer.util.ObjectUtil;
-import org.apache.commons.beanutils.BeanMap;
-import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +18,6 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @Service
@@ -281,6 +275,7 @@ public class BuyerService {
                 orderMap.put("id", order.getId());
                 orderMap.put("orderNo", order.getOrderUuid());
                 orderMap.put("status", order.getStatus());
+                orderMap.put("currentStatus", order.getCurrentStatus());
                 Integer orderId = order.getId();
                 List<CompanyInfo> companyInfoList = companyInfoMapper.selectOrderNameByOrderId(orderId);
                 companyInfoList.forEach(companyInfo -> {
@@ -415,28 +410,30 @@ public class BuyerService {
     }
 
     @Transactional
-    public ResponseEntity updateOrderStatus(Order order){
-        if(!ObjectUtils.isEmpty(order)){
+    public ResponseEntity updateOrderStatus(PastComment pastComment){
+        if(!ObjectUtils.isEmpty(pastComment)){
+
+            Order order = new Order();
+            order.setId(pastComment.getOrderId());
+            order.setCurrentStatus(pastComment.getCurrentStatus());
+
             orderMapper.updateByPrimaryKeySelective(order);
 
-            List<PastComment> pastCommentList = order.getPastCommentList();
-            if(!ObjectUtils.isEmpty(pastCommentList)){
-                PastComment pastComment = pastCommentList.get(0);
-                pastComment.setOrderId(order.getId());
-                pastComment.setStatus(order.getCurrentStatus());
-                pastCommentMapper.insertPastComment(pastComment);
-                return ResponseEntity.ok();
-            }
+            pastCommentMapper.insertPastComment(pastComment);
+            return ResponseEntity.ok();
         }
         throw new RuntimeException("update error!");
     }
 
     public ResponseEntity selectPastCommentByOrderId(Integer orderId){
         if(orderId > 0){
+            Map<String, Object> objectMap = new HashMap<>();
             List<PastComment> pastComments = pastCommentMapper.selectPastCommentByOrderId(new PastComment(orderId));
-            return ResponseEntity.ok(pastComments);
+            Order order = orderMapper.selectByPrimaryKey(orderId);
+            objectMap.put("pastComments",pastComments);
+            objectMap.put("currentStatus", order.getCurrentStatus());
+            return ResponseEntity.ok(objectMap);
         }
-
         return ResponseEntity.jsonError("return object is null");
     }
 }
