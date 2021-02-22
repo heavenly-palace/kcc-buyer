@@ -20,7 +20,7 @@ spring:
       registerMbeans: true
       jdbc-url: jdbc:mysql://172.16.29.182:3306/kcc_order?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
       username: root
-      password: P@sswd89324578945
+      password: P@sswd123321
       driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
     serialization:

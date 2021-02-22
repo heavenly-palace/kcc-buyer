@@ -2,10 +2,8 @@ package com.kcc.buyer.util;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
-import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import com.kcc.buyer.domain.*;
-
 import java.io.*;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -144,6 +142,14 @@ public class GeneratePdf {
             p2.setIndentationLeft(300);
             p2.setPaddingTop(-200f);
 
+            String headPicture = "/home/picture/contract.jpg";
+            Image image = Image.getInstance(headPicture);
+
+            //float documentWidth = document.getPageSize().getWidth() - document.leftMargin() - document.rightMargin();
+            //float documentHeight = documentWidth ;//重新设置宽高
+            image.scaleAbsolute(200f, 200f);//重新设置宽高
+            image.setAbsolutePosition(240f,20f);
+
             document.add(titleOrder);
             document.add(number);
             document.add(p1);
@@ -158,7 +164,8 @@ public class GeneratePdf {
             document.add(tablePayPlan);
             document.add(comment);
             document.add(p2);
-        } catch (DocumentException e) {
+            document.add(image);
+        } catch (DocumentException | IOException e) {
             e.printStackTrace();
         }
 
