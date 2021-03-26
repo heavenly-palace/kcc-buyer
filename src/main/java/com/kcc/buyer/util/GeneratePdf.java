@@ -27,8 +27,8 @@ public class GeneratePdf {
 
     {
         try {
-            String fontPath = "E:\\BaiduNetdiskDownload\\微软雅黑.ttf";
-            //String fontPath = "/home/font/微软雅黑.ttf";
+            //String fontPath = "E:\\BaiduNetdiskDownload\\微软雅黑.ttf";
+            String fontPath = "/home/font/微软雅黑.ttf";
             bfChinese = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             //Font yahei12 = new Font(baseFont1, 12f);
             //bfChinese = BaseFont.createFont("Microsoft YaHei", "GB2312", BaseFont.NOT_EMBEDDED);
@@ -142,12 +142,12 @@ public class GeneratePdf {
             p2.setIndentationLeft(300);
             p2.setPaddingTop(-300f);
 
-            //String headPicture = "/home/images/contract.jpg";
-            String headPicture = "C:\\Users\\memor\\Desktop\\contract.jpg";
+            String headPicture = "/home/images/contract.jpg";
+            //String headPicture = "C:\\Users\\memor\\Desktop\\contract.jpg";
             Image image = Image.getInstance(headPicture);
 
-            float documentWidth = document.getPageSize().getWidth() - document.leftMargin() - document.rightMargin();
-            float documentHeight = documentWidth / 580 * 320;//重新设置宽高
+            //float documentWidth = document.getPageSize().getWidth() - document.leftMargin() - document.rightMargin();
+            //float documentHeight = documentWidth / 580 * 320;//重新设置宽高
             image.scaleAbsolute(200f, 200f);//重新设置宽高
             image.setAbsolutePosition(240f,20f);
 
